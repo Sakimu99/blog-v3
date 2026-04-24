@@ -1,24 +1,27 @@
 <script setup lang="ts">
-const appConfig = useAppConfig()
+const appConfig = useAppConfig();
 </script>
 
 <template>
-<footer class="blog-footer">
-	<nav class="footer-nav">
-		<div v-for="(group, groupIndex) in appConfig.footer.nav" :key="groupIndex">
-			<hgroup class="text-creative" v-text="group.title" />
-			<menu>
-				<li v-for="(item, itemIndex) in group.items" :key="itemIndex">
-					<UtilLink :to="item.url">
-						<Icon :name="item.icon" />
-						<span class="nav-text">{{ item.text }}</span>
-					</UtilLink>
-				</li>
-			</menu>
-		</div>
-	</nav>
-	<p v-html="appConfig.footer.copyright" />
-</footer>
+	<footer class="blog-footer">
+		<nav class="footer-nav">
+			<div
+				v-for="(group, groupIndex) in appConfig.footer.nav"
+				:key="groupIndex"
+			>
+				<hgroup class="text-creative" v-text="group.title" />
+				<menu>
+					<li v-for="(item, itemIndex) in group.items" :key="itemIndex">
+						<UtilLink :to="item.url">
+							<Icon :name="item.icon" />
+							<span class="nav-text">{{ item.text }}</span>
+						</UtilLink>
+					</li>
+				</menu>
+			</div>
+		</nav>
+		<p v-html="appConfig.footer.copyright" />
+	</footer>
 </template>
 
 <style lang="scss" scoped>
@@ -45,7 +48,9 @@ const appConfig = useAppConfig()
 			padding: 0.3em 0.5em;
 			border-radius: 0.5em;
 			font-size: 0.9em;
-			transition: background-color 0.2s, color 0.1s;
+			transition:
+				background-color 0.2s,
+				color 0.1s;
 
 			&:hover {
 				background-color: var(--c-bg-soft);

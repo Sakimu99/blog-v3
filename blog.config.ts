@@ -1,13 +1,13 @@
 import type { FeedEntry } from './app/types/feed'
 
 const basicConfig = {
-	title: '博客',
-	subtitle: '博客',
+	title: 'Sakimu',
+	subtitle: '总有一天会到达那个地方',
 	// 长 description 利好于 SEO
-	description: '博客',
+	description: '',
 	author: {
-		name: '博客',
-		avatar: 'https://www.example.site/api/avatar.png',
+		name: 'Sakimu',
+		avatar: 'https://q.qlogo.cn/headimg_dl?dst_uin=2811363539&spec=5',
 		email: 'hi@example.cyou',
 		homepage: 'https://www.example.site/',
 	},
@@ -16,7 +16,7 @@ const basicConfig = {
 		name: '署名-非商业性使用-相同方式共享 4.0 国际',
 		url: 'https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hans',
 	},
-	favicon: 'https://www.example.site/api/icon.png',
+	favicon: 'https://q.qlogo.cn/headimg_dl?dst_uin=2811363539&spec=5',
 	language: 'zh-CN',
 	timeEstablished: '2019-07-19',
 	timeZone: 'Asia/Shanghai',
