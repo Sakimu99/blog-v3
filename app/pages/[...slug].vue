@@ -46,25 +46,43 @@ if (import.meta.dev) {
 </script>
 
 <template>
-<template v-if="post">
-	<PostHeader v-bind="post" />
-	<PostExcerpt v-if="excerpt" :excerpt />
-	<!-- 使用 float-in 动画会导致搜索跳转不准确 -->
-	<ContentRenderer
-		class="article"
-		:class="getPostTypeClassName(post?.type, { prefix: 'md' })"
-		:value="post"
-		tag="article"
+	<template v-if="post">
+		<div class="post-reading reading-card">
+			<PostHeader v-bind="post" />
+			<PostExcerpt v-if="excerpt" :excerpt />
+			<!-- 使用 float-in 动画会导致搜索跳转不准确 -->
+			<ContentRenderer
+				class="article"
+				:class="getPostTypeClassName(post?.type, { prefix: 'md' })"
+				:value="post"
+				tag="article"
+			/>
+		</div>
+
+		<PostFooter v-bind="post" />
+		<PostSurround />
+		<PostComment />
+	</template>
+
+	<ZError
+		v-else
+		icon="line-md:document-delete-twotone"
+		title="内容为空或页面不存在"
 	/>
-
-	<PostFooter v-bind="post" />
-	<PostSurround />
-	<PostComment />
 </template>
 
-<ZError
-	v-else
-	icon="line-md:document-delete-twotone"
-	title="内容为空或页面不存在"
-/>
-</template>
+<style lang="scss" scoped>
+.post-reading {
+	margin: 0.5rem;
+	padding: 0.35rem;
+
+	@media (max-width: $breakpoint-mobile) {
+		margin: 0;
+		padding: 0;
+		border: none;
+		background: none;
+		box-shadow: none;
+		backdrop-filter: none;
+	}
+}
+</style>

@@ -10,28 +10,28 @@ const mainDate = computed(() => props.useUpdated ? props.updated : props.date)
 </script>
 
 <template>
-<li class="article-item">
-	<UtilDate class="dim-hover" :date="mainDate" format="monthDay" />
+	<li class="article-item">
+		<UtilDate class="dim-hover" :date="mainDate" format="monthDay" />
 
-	<div class="gradient-card">
-		<UtilLink class="article-link scrollbar-hidden scrollcheck-x" :to :title="description">
-			<span class="article-title">
-				{{ title }}
-			</span>
+		<div class="gradient-card archive-surface reading-surface-soft">
+			<UtilLink class="article-link scrollbar-hidden scrollcheck-x" :to :title="description">
+				<span class="article-title">
+					{{ title }}
+				</span>
 
-			<UtilDate
-				v-if="date && useUpdated && isTimeDiffSignificant(date, updated)"
-				class="dim-hover info"
-				:date="date"
-				:format="updated && isSameUnit(date, updated, 'year') ? 'monthDay' : 'date'"
-			/>
+				<UtilDate
+					v-if="date && useUpdated && isTimeDiffSignificant(date, updated)"
+					class="dim-hover info"
+					:date="date"
+					:format="updated && isSameUnit(date, updated, 'year') ? 'monthDay' : 'date'"
+				/>
 
-			<ul v-if="tags?.length" class="dim-hover info tag-list">
-				<li v-for="tag in tags" :key="tag" v-text="tag" />
-			</ul>
-		</UtilLink>
-	</div>
-</li>
+				<ul v-if="tags?.length" class="dim-hover info tag-list">
+					<li v-for="tag in tags" :key="tag" v-text="tag" />
+				</ul>
+			</UtilLink>
+		</div>
+	</li>
 </template>
 
 <style lang="scss" scoped>
@@ -73,7 +73,7 @@ const mainDate = computed(() => props.useUpdated ? props.updated : props.date)
 	}
 }
 
-.gradient-card {
+.archive-surface {
 	flex-grow: 1;
 	min-width: 0;
 }

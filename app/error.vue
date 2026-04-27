@@ -12,7 +12,6 @@ layoutStore.setAside(['blog-log'])
 <template>
 <NuxtLoadingIndicator />
 <NuxtRouteAnnouncer :style="{ position: 'absolute' }" />
-<BlogSkipToContent />
 <BlogSidebar />
 <div id="content">
 	<main id="main-content">
@@ -33,7 +32,9 @@ layoutStore.setAside(['blog-log'])
 	<BlogAside />
 </div>
 <BlogPanel />
-<BikariyaModals />
+<div id="modals-host">
+	<BikariyaModals />
+</div>
 </template>
 
 <style lang="scss" scoped>

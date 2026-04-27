@@ -62,7 +62,7 @@ if (props.avoid) {
 .pagination {
 	display: flex;
 	max-width: calc(100vw);
-	margin: 1rem auto;
+	margin: auto auto 0.05rem;
 	border: 1px solid var(--c-border);
 	border-radius: 0.5rem;
 	box-shadow: var(--box-shadow-1);
@@ -72,7 +72,7 @@ if (props.avoid) {
 
 	&.sticky {
 		position: sticky;
-		bottom: min(2em, 5%);
+		bottom: clamp(1rem, 3vh, 1.25rem);
 
 		&:not(.expand) {
 			max-width: var(--collapsed-width);
