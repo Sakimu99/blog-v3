@@ -4,7 +4,7 @@ const appConfig = useAppConfig();
 
 <template>
 	<footer class="blog-footer">
-		<div class="footer-main">
+		<div class="footer-main reading-surface-soft">
 			<nav class="footer-nav">
 				<div
 					v-for="(group, groupIndex) in appConfig.footer.nav"
@@ -41,8 +41,7 @@ const appConfig = useAppConfig();
 		align-items: center;
 		justify-content: space-between;
 		gap: 0.75rem 1.5rem;
-		padding: 0.85rem 0 var(--gap);
-		border-top: 1px solid var(--c-border);
+		padding: 0.85rem 1rem var(--gap);
 		flex-wrap: wrap;
 		margin: 0;
 	}

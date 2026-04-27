@@ -1,6 +1,7 @@
 .article {
 	margin: 1rem;
 	line-height: 1.8;
+	color: var(--c-text-1);
 
 	p {
 		margin: 0.5em 0;
@@ -58,10 +59,11 @@
 
 	blockquote {
 		padding: 0.2rem 0.8rem;
-		border-inline-start: 4px solid var(--c-border);
-		border-radius: 4px;
-		background-color: var(--c-bg-2);
+		border-inline-start: 4px solid var(--c-reading-card-border);
+		border-radius: 0.75rem;
+		background-color: var(--c-reading-soft);
 		font-size: 0.9rem;
+		box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--c-reading-card-border) 60%, transparent);
 
 		> .z-codeblock {
 			margin: 0 -0.8rem;
@@ -81,13 +83,14 @@
 		&:not([class]), &.image {
 			display: block;
 			margin: 1rem auto;
-			border-radius: 0.5rem;
+			border-radius: 0.75rem;
+			box-shadow: var(--box-shadow-2);
 		}
 	}
 
 	hr {
 		margin: 3em 0;
-		border-top: 0.4em dashed var(--c-border);
+		border-top: 0.4em dashed var(--c-reading-card-border);
 	}
 
 	strong {

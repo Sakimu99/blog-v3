@@ -59,7 +59,7 @@ export default defineAppConfig({
 		iconNav: [
 			{ icon: 'tabler:home', text: '个人主页', url: blogConfig.author.homepage },
 			{ icon: 'ri:qq-line', text: '交流群: 1060233598', url: 'https://qm.qq.com/q/GR7uRvsCgo' },
-			{ icon: 'tabler:brand-github', text: 'GitHub: octocat', url: 'https://github.com/Sakimu99' },
+			{ icon: 'tabler:brand-github', text: 'GitHub: Sakimu99', url: 'https://github.com/Sakimu99' },
 			{ icon: 'tabler:rss', text: 'Atom订阅', url: '/atom.xml' },
 			{ icon: 'ri:subway-line', text: '开往 - 博客下一站', url: 'https://www.travellings.cn/go.html' },
 		] satisfies NavItem[],

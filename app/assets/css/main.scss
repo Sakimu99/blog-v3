@@ -11,7 +11,7 @@
 	--box-shadow-3: 0 0.5em 1em var(--ld-shadow);
 
 	overflow-wrap: break-word;
-	background-color: var(--c-bg-1);
+	background-color: var(--c-scene-base);
 	font-family: sans-serif;
 	font-family: var(--font-basic);
 	font-synthesis: style;
@@ -90,7 +90,6 @@ button, input, textarea {
 	color: currentcolor;
 }
 
-// Iconify 图标复用了此类
 :where(.iconify) {
 	display: inline-block;
 	flex-shrink: 0;
@@ -111,14 +110,13 @@ button, input, textarea {
 	transform: scale(0.8);
 }
 
-// 图片加载失败 fallback
 img {
 	contain: paint;
 	display: inline-block;
 
 	&::before {
 		all: initial;
-		content: attr(alt); // Firefox 的 ::before content 仅在 alt 不为空时展示且值为 attr(alt) 无法修改
+		content: attr(alt);
 		display: grid;
 		place-content: center;
 		position: absolute;
@@ -141,8 +139,8 @@ img {
 .bikariya-overlay {
 	position: fixed;
 	inset: 0;
-	background-color: #0003;
-	backdrop-filter: blur(4px);
+	background-color: var(--c-scene-mask);
+	backdrop-filter: blur(8px);
 
 	&.v-enter-from,
 	&.v-leave-to {
@@ -159,7 +157,7 @@ img {
 	padding: 0.3em 0.6em;
 	border-radius: 0.5em;
 	box-shadow: var(--box-shadow-3);
-	background-color: var(--ld-bg-card);
+	background-color: var(--c-reading-card);
 	font-size: 0.8rem;
 	line-height: 1.4;
 	color: var(--c-text-2);
@@ -170,7 +168,7 @@ img {
 	}
 
 	> .tippy-svg-arrow {
-		fill: var(--ld-bg-card);
+		fill: var(--c-reading-card);
 		pointer-events: none;
 	}
 }
@@ -180,9 +178,9 @@ img {
 		font-style: var(--shiki-light-font-style);
 
 		.dark & {
-			background-color: var(--shiki-dark-bg) !important; /* stylelint-disable-line declaration-no-important */
+			background-color: var(--shiki-dark-bg) !important;
 			font-style: var(--shiki-dark-font-style);
-			color: var(--shiki-dark) !important; /* stylelint-disable-line declaration-no-important */
+			color: var(--shiki-dark) !important;
 		}
 	}
 
