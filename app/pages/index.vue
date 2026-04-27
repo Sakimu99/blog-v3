@@ -67,6 +67,9 @@ const listRecommended = computed(() => orderBy(
 
 <style lang="scss" scoped>
 .post-list {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
 	margin: 1rem;
 }
 

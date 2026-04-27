@@ -1,17 +1,17 @@
 <template>
-<NuxtLoadingIndicator />
-<NuxtRouteAnnouncer :style="{ position: 'absolute' }" />
-<BlogSkipToContent />
-<BlogSidebar />
-<div id="content">
-	<main id="main-content">
-		<NuxtPage />
-		<BlogFooter />
-	</main>
-	<BlogAside />
-</div>
-<BlogPanel />
-<BikariyaModals />
+	<NuxtLoadingIndicator />
+	<NuxtRouteAnnouncer :style="{ position: 'absolute' }" />
+	<BlogSkipToContent />
+	<BlogSidebar />
+	<div id="content">
+		<main id="main-content">
+			<NuxtPage />
+			<BlogFooter />
+		</main>
+		<BlogAside />
+	</div>
+	<BlogPanel />
+	<BikariyaModals />
 </template>
 
 <!-- eslint-disable-next-line vue/enforce-style-attribute -->
@@ -48,7 +48,11 @@
 
 	// 此处不建议给内容设置 padding
 	> #main-content {
+		display: flex;
+		flex-direction: column;
 		flex-grow: 1; // 使较小宽度的内容占满
+		min-height: 100vh;
+		min-height: 100dvh;
 
 		// overflow: hidden; // 会使一部分元素吸顶失效
 

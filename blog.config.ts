@@ -8,8 +8,8 @@ const basicConfig = {
 	author: {
 		name: 'Sakimu',
 		avatar: 'https://q.qlogo.cn/headimg_dl?dst_uin=2811363539&spec=5',
-		email: 'hi@example.cyou',
-		homepage: 'https://www.example.site/',
+		email: 'sakimu99@outlook.com',
+		homepage: 'https://blog.sakimu.com/',
 	},
 	copyright: {
 		abbr: 'CC BY-NC-SA 4.0',
@@ -18,9 +18,9 @@ const basicConfig = {
 	},
 	favicon: 'https://q.qlogo.cn/headimg_dl?dst_uin=2811363539&spec=5',
 	language: 'zh-CN',
-	timeEstablished: '2019-07-19',
+	timeEstablished: '2026-05-01',
 	timeZone: 'Asia/Shanghai',
-	url: 'https://blog.example.site/',
+	url: 'https://blog.sakimu.com/',
 	defaultCategory: '未分类',
 }
 
@@ -92,7 +92,7 @@ const blogConfig = {
 /** 用于生成 OPML 和友链页面配置 */
 export const myFeed: FeedEntry = {
 	author: blogConfig.author.name,
-	sitenick: '摸鱼处',
+	sitenick: '咲梦',
 	title: blogConfig.title,
 	desc: blogConfig.subtitle || blogConfig.description,
 	link: blogConfig.url,
@@ -101,7 +101,7 @@ export const myFeed: FeedEntry = {
 	avatar: blogConfig.author.avatar,
 	archs: ['Nuxt', 'Vercel'],
 	date: blogConfig.timeEstablished,
-	comment: '这是我自己',
+	comment: '总有一天会到达自己想到达的地方',
 }
 
 export default blogConfig
