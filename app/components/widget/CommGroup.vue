@@ -12,6 +12,13 @@
 			<Icon name="ri:qq-fill" />1060233598
 		</Tip>
 	</BlogWidget>
+
+	<BlogWidget card dim bg-img="https://www.bilibili.com/favicon.ico" bg-right>
+		<UtilLink class="community-link" to="https://space.bilibili.com/23045581">
+			<div class="title text-creative">Bilibili</div>
+			<div class="tip"><Icon name="ri:bilibili-fill" />23045581</div>
+		</UtilLink>
+	</BlogWidget>
 </template>
 
 <style lang="scss" scoped>
@@ -34,9 +41,23 @@
 	}
 }
 
+.community-link {
+	display: block;
+	color: inherit;
+}
+
 .tip {
+	display: flex;
+	align-items: center;
+	gap: 0.25rem;
 	font-size: 0.9em;
 	line-height: 2;
+}
+
+.external-tip {
+	opacity: 0.6;
+	margin-inline-start: auto;
+	font-size: 1em;
 }
 
 :deep(.bg-img).bg-img.bg-img {
