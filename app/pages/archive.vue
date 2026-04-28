@@ -127,6 +127,10 @@ function getArticleYear(article: ArticleProps) {
 .archive {
 	padding: 1rem; // 防止内部 outline 被 mask
 	mask-image: linear-gradient(#FFF 50%, #FFF7);
+
+	@media (max-width: $breakpoint-mobile) {
+		padding: 0.75rem 0.5rem;
+	}
 }
 
 .archive-group {
@@ -136,6 +140,10 @@ function getArticleYear(article: ArticleProps) {
 		display: grid;
 		grid-template-columns: repeat(var(--archive-item-column), 1fr);
 		column-gap: calc((5 - var(--archive-item-column)) * 0.2em);
+
+		@media (max-width: $breakpoint-mobile) {
+			grid-template-columns: 1fr;
+		}
 	}
 
 	&.hide-info :deep(.dim-hover) {
@@ -199,6 +207,21 @@ function getArticleYear(article: ArticleProps) {
 		flex-wrap: wrap;
 		justify-content: flex-end;
 		column-gap: 0.5em;
+	}
+
+	@media (max-width: $breakpoint-mobile) {
+		align-items: flex-end;
+		position: static;
+		font-size: 1rem;
+		color: var(--c-text-3);
+
+		> .archive-year {
+			font-size: 2.2em;
+		}
+
+		> .archive-age {
+			display: none;
+		}
 	}
 }
 </style>

@@ -1,24 +1,24 @@
 <template>
-	<NuxtLoadingIndicator />
-	<NuxtRouteAnnouncer :style="{ position: 'absolute' }" />
-	<div class="site-scene" aria-hidden="true">
-		<div class="site-scene__image" />
-		<div class="site-scene__veil" />
+<NuxtLoadingIndicator />
+<NuxtRouteAnnouncer :style="{ position: 'absolute' }" />
+<div class="site-scene" aria-hidden="true">
+	<div class="site-scene__image" />
+	<div class="site-scene__veil" />
+</div>
+<div id="layout-shell">
+	<BlogSidebar />
+	<div id="content">
+		<main id="main-content">
+			<NuxtPage />
+			<BlogFooter />
+		</main>
+		<BlogAside />
 	</div>
-	<div id="layout-shell">
-		<BlogSidebar />
-		<div id="content">
-			<main id="main-content">
-				<NuxtPage />
-				<BlogFooter />
-			</main>
-			<BlogAside />
-		</div>
-	</div>
-	<BlogPanel />
-	<div id="modals-host">
-			<BikariyaModals />
-		</div>
+</div>
+<BlogPanel />
+<div id="modals-host">
+	<BikariyaModals />
+</div>
 </template>
 
 <!-- eslint-disable-next-line vue/enforce-style-attribute -->
@@ -31,7 +31,7 @@
 	background-color: var(--c-scene-base);
 	isolation: isolate;
 
-	> :not(.site-scene):not(#modals-host) {
+	> :not(.site-scene, #modals-host) {
 		position: relative;
 		z-index: 1;
 	}
@@ -47,15 +47,15 @@
 	justify-content: center;
 	gap: 1rem;
 	width: fit-content;
-	max-width: 100%;
 	min-width: 0;
+	max-width: 100%;
 	margin: 0 auto;
 }
 
 .site-scene {
 	position: fixed;
-	inset: 0;
 	overflow: hidden;
+	inset: 0;
 	pointer-events: none;
 	z-index: 0;
 
@@ -98,8 +98,8 @@
 	#blog-sidebar, #blog-aside {
 		border: 1px solid var(--c-reading-shell-border);
 		border-radius: 1.25rem;
-		background-color: var(--c-reading-soft);
 		box-shadow: var(--box-shadow-2);
+		background-color: var(--c-reading-soft);
 		backdrop-filter: blur(18px) saturate(1.2);
 	}
 }
@@ -116,18 +116,18 @@
 
 	// 此处不建议给内容设置 padding
 	> #main-content {
-		position: relative;
 		display: flex;
 		flex-direction: column;
 		flex-grow: 1; // 使较小宽度的内容占满
+		position: relative;
+		min-width: 0;
 		min-height: 100vh;
 		min-height: 100dvh;
-		min-width: 0;
 		padding: 0.65rem 0 0.35rem;
 		border: 1px solid var(--c-reading-shell-border);
 		border-radius: 1.5rem;
-		background-color: var(--c-reading-shell);
 		box-shadow: 0 1.25rem 3rem var(--c-reading-shadow);
+		background-color: var(--c-reading-shell);
 		backdrop-filter: blur(20px) saturate(1.25);
 
 		// overflow: hidden; // 会使一部分元素吸顶失效
@@ -153,12 +153,17 @@
 		display: block;
 	}
 
+	#content {
+		display: block;
+		width: 100%;
+	}
+
 	#content > #main-content {
 		padding: 0;
 		border: none;
 		border-radius: 0;
-		background-color: transparent;
 		box-shadow: none;
+		background-color: transparent;
 		backdrop-filter: none;
 	}
 }

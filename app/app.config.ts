@@ -99,7 +99,9 @@ export default defineAppConfig({
 			items: [
 				{ icon: 'tabler:files', text: '文章', url: '/' },
 				{ icon: 'tabler:link', text: '友链', url: '/link' },
+				{ icon: 'tabler:tool', text: '工具', url: '/tools' },
 				{ icon: 'tabler:archive', text: '归档', url: '/archive' },
+				{ icon: 'tabler:chart-bar', text: '统计', url: 'https://cloud.umami.is/share/iANVto3uvxSxlGG1' },
 			],
 		},
 	] satisfies Nav,
