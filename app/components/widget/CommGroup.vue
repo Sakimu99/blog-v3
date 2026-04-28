@@ -2,7 +2,7 @@
 	<BlogWidget
 		card
 		dim
-		title="博客/技术社区"
+		title="联系我/我们"
 		bg-img="https://p.qlogo.cn/gh/1060233598/1060233598/100/"
 		bg-right
 	>
