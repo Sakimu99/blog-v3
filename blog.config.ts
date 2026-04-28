@@ -8,8 +8,8 @@ const basicConfig = {
 	author: {
 		name: 'Sakimu',
 		avatar: 'https://q.qlogo.cn/headimg_dl?dst_uin=2811363539&spec=5',
-		email: 'hi@example.cyou',
-		homepage: 'https://www.example.site/',
+		email: 'sakimu99@outlook.com',
+		homepage: 'https://blog.sakimu.com/',
 	},
 	copyright: {
 		abbr: 'CC BY-NC-SA 4.0',
@@ -18,9 +18,9 @@ const basicConfig = {
 	},
 	favicon: 'https://q.qlogo.cn/headimg_dl?dst_uin=2811363539&spec=5',
 	language: 'zh-CN',
-	timeEstablished: '2019-07-19',
+	timeEstablished: '2026-05-01',
 	timeZone: 'Asia/Shanghai',
-	url: 'https://blog.example.site/',
+	url: 'https://blog.sakimu.com/',
 	defaultCategory: '未分类',
 }
 
@@ -74,25 +74,25 @@ const blogConfig = {
 
 	/** 向 <head> 中添加脚本 */
 	scripts: [
-		// 自己部署的 Umami 统计服务
-		{ 'src': 'https://zhi.example.site/zhi.js', 'data-website-id': 'a1997c81-a42b-46f6-8d1d-8fbd67a8ef41', 'defer': true },
+		// Umami 访问统计
+		{ 'src': 'https://cloud.umami.is/script.js', 'data-website-id': '5909ad17-6204-410e-8ebe-64328ac0e9f1', 'defer': true },
 		// 自己网站的 Cloudflare Insights 统计服务
-		{ 'src': 'https://static.cloudflareinsights.com/beacon.min.js', 'data-cf-beacon': '{"token": "97a4fe32ed8240ac8284e9bffaf03962"}', 'defer': true },
+		{ 'src': 'https://static.cloudflareinsights.com/beacon.min.js', 'data-cf-beacon': '{"token": "c42b56e680b7466bab14c87c007d36be"}', 'defer': true },
 		// Twikoo 评论系统
 		{ src: 'https://lib.baomitu.com/twikoo/1.6.44/twikoo.min.js', defer: true },
 	],
 
 	/** 自己部署的 Twikoo 服务 */
 	twikoo: {
-		envId: 'https://twikoo.example.site/',
-		preload: 'https://twikoo.example.site/',
+		envId: 'https://sakimu-twikoo.hf.space',
+		preload: 'https://sakimu-twikoo.hf.space',
 	},
 }
 
 /** 用于生成 OPML 和友链页面配置 */
 export const myFeed: FeedEntry = {
 	author: blogConfig.author.name,
-	sitenick: '摸鱼处',
+	sitenick: '咲梦',
 	title: blogConfig.title,
 	desc: blogConfig.subtitle || blogConfig.description,
 	link: blogConfig.url,
@@ -101,7 +101,7 @@ export const myFeed: FeedEntry = {
 	avatar: blogConfig.author.avatar,
 	archs: ['Nuxt', 'Vercel'],
 	date: blogConfig.timeEstablished,
-	comment: '这是我自己',
+	comment: '总有一天会到达自己想到达的地方',
 }
 
 export default blogConfig

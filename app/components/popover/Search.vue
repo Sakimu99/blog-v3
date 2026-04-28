@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import type { ModalEmits, ModalProps } from '#modals'
+import type { CSSProperties } from 'vue'
 import MiniSearch from 'minisearch'
 
-const props = defineProps<ModalProps>()
+const props = defineProps<ModalProps & {
+	style?: CSSProperties
+}>()
 
 defineEmits<ModalEmits>()
 
@@ -87,75 +90,98 @@ function openActiveItem() {
 </script>
 
 <template>
-<Transition name="float-in">
-	<div v-if="open" class="blog-search">
-		<form class="input" @submit.prevent>
-			<Icon v-show="false" name="line-md:loading-alt-loop" />
-			<Icon :name="status === 'pending' ? 'line-md:loading-alt-loop' : 'tabler:search'" />
+	<Transition name="search-mask">
+		<div v-if="open" class="search-overlay" :style="{ zIndex: props.style?.zIndex }" @click="$emit('close')" />
+	</Transition>
 
-			<!-- 方向键切换搜索结果不应只在搜索框内触发 -->
-			<input
-				ref="searchInput"
-				v-model="word"
-				type="search"
-				incremental
-				class="search-input"
-				placeholder="键入开始搜索"
-				@keydown.up.prevent
-				@keydown.down.prevent
-			>
-		</form>
+	<Transition name="float-in">
+		<div v-if="open" class="search-wrap" :style="{ zIndex: props.style?.zIndex }">
+			<div class="blog-search" @click.stop>
+				<form class="input" @submit.prevent>
+					<Icon v-show="false" name="line-md:loading-alt-loop" />
+					<Icon :name="status === 'pending' ? 'line-md:loading-alt-loop' : 'tabler:search'" />
 
-		<TransitionGroup name="expand">
-			<div v-if="debouncedWord && status === 'success' && !result.length" class="no-result">
-				无结果
+					<!-- 方向键切换搜索结果不应只在搜索框内触发 -->
+					<input
+						ref="searchInput"
+						v-model="word"
+						type="search"
+						incremental
+						class="search-input"
+						placeholder="键入开始搜索"
+						@keydown.up.prevent
+						@keydown.down.prevent
+					>
+				</form>
+
+				<TransitionGroup name="expand">
+					<div v-if="debouncedWord && status === 'success' && !result.length" class="no-result">
+						无结果
+					</div>
+
+					<menu
+						v-if="result.length"
+						ref="list-result"
+						:key="result.length < 5 ? result.length : result[0]?.id"
+						class="scrollcheck-y search-result"
+					>
+						<PopoverSearchItem
+							v-for="(item, itemIndex) in result"
+							:key="item.id"
+							v-bind="item"
+							:class="{ active: activeIndex === itemIndex }"
+							@mousemove="updateActiveIndex(itemIndex)"
+						/>
+					</menu>
+
+					<div v-if="result.length" class="tip" @click="searchInput?.focus()">
+						<Key code="ArrowUp" prevent @press="updateActiveIndex(activeIndex - 1, true)" />
+						<Key code="ArrowDown" prevent @press="updateActiveIndex(activeIndex + 1, true)" />
+						切换&emsp;
+						<Key code="Enter" icon @press="openActiveItem" />
+						选择&emsp;
+						<Key code="Escape" :icon="false" @press="$emit('close')" />
+						关闭
+					</div>
+				</TransitionGroup>
 			</div>
-
-			<menu
-				v-if="result.length"
-				ref="list-result"
-				:key="result.length < 5 ? result.length : result[0]?.id"
-				class="scrollcheck-y search-result"
-			>
-				<PopoverSearchItem
-					v-for="(item, itemIndex) in result"
-					:key="item.id"
-					v-bind="item"
-					:class="{ active: activeIndex === itemIndex }"
-					@mousemove="updateActiveIndex(itemIndex)"
-				/>
-			</menu>
-
-			<div v-if="result.length" class="tip" @click="searchInput?.focus()">
-				<Key code="ArrowUp" prevent @press="updateActiveIndex(activeIndex - 1, true)" />
-				<Key code="ArrowDown" prevent @press="updateActiveIndex(activeIndex + 1, true)" />
-				切换&emsp;
-				<Key code="Enter" icon @press="openActiveItem" />
-				选择&emsp;
-				<Key code="Escape" :icon="false" @press="$emit('close')" />
-				关闭
-			</div>
-		</TransitionGroup>
-	</div>
-</Transition>
+		</div>
+	</Transition>
 </template>
 
 <style lang="scss" scoped>
-.blog-search {
-	--float-distance: 20vh;
-
-	contain: paint;
+.search-overlay {
 	position: fixed;
 	inset: 0;
-	width: 90%;
-	height: fit-content;
-	max-width: $breakpoint-mobile;
-	margin: auto;
+	z-index: var(--z-index-popover);
+	background-color: transparent;
+	backdrop-filter: blur(2px) saturate(1.02);
+}
+
+.search-wrap {
+	--float-distance: 12vh;
+
+	position: fixed;
+	inset: 0;
+	z-index: calc(var(--z-index-popover) + 1);
+	display: grid;
+	place-items: center;
+	padding: 5vh 1rem;
+	pointer-events: none;
+}
+
+.blog-search {
+	contain: paint;
+	pointer-events: auto;
+	width: min(90vw, #{$breakpoint-mobile});
+	max-height: min(80vh, 80dvh);
+	overflow: hidden;
 	border: 1px solid var(--c-primary);
 	border-radius: 1em;
 	box-shadow: var(--box-shadow-2), var(--box-shadow-3);
 	outline: 0.2em solid var(--c-primary-soft);
 	background-color: var(--ld-bg-card);
+	backdrop-filter: blur(18px) saturate(1.15);
 }
 
 .input {
@@ -182,8 +208,7 @@ function openActiveItem() {
 }
 
 .search-result {
-	max-height: 75vh;
-	max-height: 75dvh;
+	max-height: min(60vh, 60dvh);
 	transition: all 0.5s;
 	scroll-padding: var(--fadeout-height);
 }
@@ -210,5 +235,15 @@ function openActiveItem() {
 .expand-leave-to {
 	opacity: 0;
 	max-height: 0;
+}
+
+.search-mask-enter-active,
+.search-mask-leave-active {
+	transition: opacity var(--delay);
+}
+
+.search-mask-enter-from,
+.search-mask-leave-to {
+	opacity: 0;
 }
 </style>

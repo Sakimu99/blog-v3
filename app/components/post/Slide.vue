@@ -34,7 +34,7 @@ useEventListener(carouselEl, 'wheel', (e) => {
 		<span class="title text-creative">精选文章</span>
 		<div class="at-slide-hover">
 			<Icon name="tabler:mouse" />
-			按住 Shift 横向滚动
+			滑动浏览精选文章
 		</div>
 	</div>
 
@@ -94,6 +94,14 @@ useEventListener(carouselEl, 'wheel', (e) => {
 	&:focus-within .at-slide-hover {
 		opacity: 1;
 	}
+
+	@media (max-width: $breakpoint-mobile) {
+		margin: 0.75rem 0.5rem;
+
+		.at-slide-hover {
+			opacity: 1;
+		}
+	}
 }
 
 .z-slide-header {
@@ -112,6 +120,16 @@ useEventListener(carouselEl, 'wheel', (e) => {
 		font-weight: bold;
 		line-height: 1;
 	}
+
+	@media (max-width: $breakpoint-mobile) {
+		gap: 0.75rem;
+		height: auto;
+		margin-bottom: 0.35rem;
+
+		>.title {
+			font-size: clamp(1.75rem, 8vw, 2.4rem);
+		}
+	}
 }
 
 .z-slide-body {
@@ -128,6 +146,10 @@ useEventListener(carouselEl, 'wheel', (e) => {
 		display: flex;
 		scroll-snap-type: x mandatory;
 	}
+
+	@media (max-width: $breakpoint-mobile) {
+		mask-image: none;
+	}
 }
 
 .carousel-action {
@@ -140,6 +162,14 @@ useEventListener(carouselEl, 'wheel', (e) => {
 
 	&.prev { inset-inline-start: 1rem; }
 	&.next { inset-inline-end: 1rem; }
+
+	@media (max-width: $breakpoint-mobile) {
+		padding: 0.45em;
+		font-size: 1.2em;
+
+		&.prev { inset-inline-start: 0.35rem; }
+		&.next { inset-inline-end: 0.35rem; }
+	}
 }
 
 .slide-item {
@@ -148,6 +178,12 @@ useEventListener(carouselEl, 'wheel', (e) => {
 	position: relative;
 	width: max(12rem, 28%);
 	max-width: 80%;
+
+	@media (max-width: $breakpoint-mobile) {
+		width: 78%;
+		max-width: none;
+	}
+
 	aspect-ratio: 1.77;
 	margin: 0 min(0.5em, 1%);
 	border-radius: 0.5rem;

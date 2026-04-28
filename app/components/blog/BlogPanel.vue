@@ -49,12 +49,28 @@ const { transform } = useAvoidTransform(panelRef, avoidTargets)
 	transition: transform 0.1s;
 	z-index: var(--z-index-popover);
 
+	@media (max-width: $breakpoint-mobile) {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-end;
+		gap: 0.4rem;
+		inset-inline-end: max(0.75rem, env(safe-area-inset-right));
+		bottom: max(1rem, env(safe-area-inset-bottom));
+		border-radius: 0;
+		background-color: transparent;
+		backdrop-filter: none;
+	}
+
 	@media (max-height: $breakpoint-phone) {
 		display: flex;
 	}
 
 	&.has-active {
 		box-shadow: var(--box-shadow-1), var(--box-shadow-3);
+
+		@media (max-width: $breakpoint-mobile) {
+			box-shadow: none;
+		}
 	}
 }
 
@@ -62,6 +78,16 @@ button {
 	display: block;
 	padding: 0.5rem;
 	transition: all 0.2s;
+
+	@media (max-width: $breakpoint-mobile) {
+		min-width: 2.5rem;
+		min-height: 2.5rem;
+		padding: 0.6rem;
+		border-radius: 0.5rem;
+		box-shadow: var(--box-shadow-1);
+		background-color: var(--c-bg-a50);
+		backdrop-filter: blur(0.5rem);
+	}
 
 	&:hover {
 		background-color: var(--c-bg-a80);

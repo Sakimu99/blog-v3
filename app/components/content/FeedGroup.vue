@@ -36,7 +36,7 @@ if (import.meta.dev) {
 		<button
 			v-if="props.shuffle"
 			role="button"
-			title="点击随机排序，按住修饰键点击可取消随机排序"
+			title="点击切换友链排序"
 			@click="unshuffleEntries"
 			@click.exact="shuffleEntries"
 			v-text="name"
@@ -61,6 +61,10 @@ if (import.meta.dev) {
 .feed-group {
 	container-type: inline-size;
 	margin: 2em 1em;
+
+	@media (max-width: $breakpoint-mobile) {
+		margin: 1.5em 0.5em;
+	}
 }
 
 .feed-title {
@@ -81,6 +85,12 @@ if (import.meta.dev) {
 
 	&::selection, :hover > & {
 		color: var(--c-text-3);
+	}
+
+	@media (max-width: $breakpoint-mobile) {
+		position: static;
+		margin-bottom: 0.1em;
+		font-size: clamp(2.5rem, 12vw, 3.5rem);
 	}
 }
 
@@ -107,6 +117,10 @@ if (import.meta.dev) {
 				margin: 0 0 0.2em;
 			}
 		}
+	}
+
+	@media (max-width: $breakpoint-mobile) {
+		grid-template-columns: repeat(auto-fill, minmax(9em, 1fr));
 	}
 
 	@media (max-width: $breakpoint-phone) {

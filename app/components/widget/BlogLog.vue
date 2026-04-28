@@ -1,12 +1,10 @@
 <script setup lang="ts">
-const { timeEstablished } = useAppConfig()
-
 const blogLog = [
-	{ label: '2025-07-26', value: '重构到 Nuxt 4 + Nuxt Content v3，启用 zhilu.site 域名' },
-	{ label: '2024-08-11', value: '重构到 Nuxt 3 + Nuxt Content v2' },
-	{ label: '2023-05-24', value: '更换框架为 Hexo，升级博客' },
-	{ label: '2020-08-24', value: '使用 zhilu.cyou 域名' },
-	{ label: timeEstablished, value: '发布第一篇文章' },
+	{ label: '2026-04-28', value: '今日暂无新的 git 提交' },
+	{ label: '2026-04-27', value: '调整友链格式' },
+	{ label: '2026-04-27', value: '增加博客背景，补充卡片效果，并兼容搜索功能' },
+	{ label: '2026-04-27', value: '调整背景悬浮字体' },
+	{ label: '2026-04-27', value: '调整页面底部布局信息，调整友链并初始化部分信息' },
 ]
 </script>
 

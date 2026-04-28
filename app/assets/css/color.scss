@@ -17,6 +17,16 @@
 	--ld-bg-card: var(--c-bg-3);
 	--ld-bg-active: var(--c-primary-soft);
 	--ld-shadow: var(--c-bg-a50);
+	--site-bg-image: url('/assets/Yuki.jpg');
+	--c-scene-base: hsl(var(--hue-theme) 15% 7%);
+	--c-scene-mask: hsl(var(--hue-theme) 18% 8% / 36%);
+	--c-scene-mist: hsl(var(--hue-theme) 30% 10% / 22%);
+	--c-reading-shell: hsl(var(--hue-theme) 12% 10% / 54%);
+	--c-reading-shell-border: hsl(var(--hue-theme) 10% 30% / 36%);
+	--c-reading-shadow: hsl(var(--hue-theme) 40% 4% / 28%);
+	--c-reading-card: hsl(var(--hue-theme) 10% 16% / 70%);
+	--c-reading-card-border: hsl(var(--hue-theme) 10% 28% / 36%);
+	--c-reading-soft: hsl(var(--hue-theme) 10% 14% / 38%);
 }
 
 :root,
@@ -47,6 +57,16 @@
 	--c-warning-soft: #F932;
 	--c-error: #D55;
 	--c-error-soft: #F332;
+	--site-bg-image: url('/assets/Yuki.jpg');
+	--c-scene-base: hsl(var(--hue-theme) 25% 95%);
+	--c-scene-mask: hsl(var(--hue-theme) 40% 97% / 28%);
+	--c-scene-mist: hsl(var(--hue-theme) 30% 96% / 18%);
+	--c-reading-shell: hsl(var(--hue-theme) 24% 98% / 54%);
+	--c-reading-shell-border: hsl(var(--hue-theme) 18% 80% / 36%);
+	--c-reading-shadow: hsl(var(--hue-theme) 20% 60% / 8%);
+	--c-reading-card: hsl(var(--hue-theme) 18% 99% / 70%);
+	--c-reading-card-border: hsl(var(--hue-theme) 18% 82% / 40%);
+	--c-reading-soft: hsl(var(--hue-theme) 16% 98% / 34%);
 
 	color-scheme: only light;
 }
