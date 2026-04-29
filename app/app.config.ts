@@ -103,6 +103,7 @@ export default defineAppConfig({
 				{ icon: 'tabler:tool', text: '工具', url: '/tools' },
 				{ icon: 'tabler:archive', text: '归档', url: '/archive' },
 				{ icon: 'tabler:chart-bar', text: '统计', url: 'https://cloud.umami.is/share/iANVto3uvxSxlGG1' },
+				{ icon: 'tabler:heart-handshake', text: '投喂', url: 'https://sakimu.com/donate/' },
 			],
 		},
 	] satisfies Nav,
