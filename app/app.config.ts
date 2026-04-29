@@ -68,8 +68,9 @@ export default defineAppConfig({
 			{
 				title: '站点信息',
 				items: [
-					{ icon: 'tabler:palette', text: `${pascalCase(name)} ${version}`, url: 'https://github.com/L33Z22L11/blog-v3' },
+					{ icon: 'tabler:palette', text: `${pascalCase(name)}`, url: 'https://github.com/L33Z22L11/blog-v3' },
 					{ icon: 'tabler:certificate', text: '皖ICP备2020020404号-4', url: 'https://beian.miit.gov.cn/' },
+					{ icon: 'tabler:shield-checkered', text: '皖公网安备34112502000225号', url: 'https://beian.mps.gov.cn/#/query/webSearch?code=34112502000225' },
 				],
 			},
 		] satisfies Nav,
