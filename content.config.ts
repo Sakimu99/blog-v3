@@ -23,6 +23,7 @@ export interface ArticleSchema {
 	references?: { title?: string, link?: string }[]
 	/** TODO */
 	draft?: boolean
+	hidden?: boolean
 	permalink?: string
 
 	readingTime?: ReadTimeResults
@@ -45,6 +46,7 @@ const articleSchema = z.object({
 		link: z.string().optional(),
 	})).optional(),
 	draft: z.boolean().default(false),
+	hidden: z.boolean().default(false),
 	permalink: z.string().optional(),
 
 	readingTime: z.object({
@@ -62,6 +64,7 @@ export const collections = {
 		schema: articleSchema.extend({
 			sitemap: defineSitemapSchema({
 				name: 'content',
+				filter: entry => !entry.hidden,
 				onUrl: (url, entry) => {
 					url.lastmod = new Date(entry.updated || entry.published || entry.date || undefined).toLocaleDateString('sv')
 				},
