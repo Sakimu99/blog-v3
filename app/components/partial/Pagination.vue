@@ -97,7 +97,8 @@ if (props.avoid) {
 	}
 
 	> .pagination-num {
-		width: 3em;
+		min-width: 3em;
+		padding: 0 0.75em;
 		transition: background-color 0.2s;
 
 		&:hover { background-color: var(--c-border); }

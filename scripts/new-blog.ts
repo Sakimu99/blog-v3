@@ -158,6 +158,7 @@ const frontmatter = {
 	categories: category === blogConfig.defaultCategory ? undefined : `[${category}]`,
 	tags: tags ? `[${tags.join(', ')}]` : undefined,
 	// draft: 'true # 撰写完成后，请删除此行',
+	// hidden: 'true # 若想隐藏本文，请删除此行前的注释',
 }
 // #endregion
 

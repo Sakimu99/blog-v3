@@ -69,10 +69,19 @@ function toggleDirection() {
 <style lang="scss" scoped>
 .order-toggle {
 	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
 	gap: 1rem;
 	color: var(--c-text-2);
 
+	> span {
+		display: inline-flex;
+		flex-wrap: wrap;
+		gap: 0.35rem;
+	}
+
 	:deep(button), :deep(a) {
+		max-width: 100%;
 		transition: color 0.2s;
 
 		&:hover {
@@ -89,10 +98,37 @@ function toggleDirection() {
 			transform: scaleY(-1);
 		}
 	}
+
+	@media (max-width: $breakpoint-mobile) {
+		gap: 0.5rem;
+
+		> span {
+			width: 100%;
+		}
+	}
 }
 
 :deep(.secret-container) {
 	margin-inline-end: auto;
+
+	@media (max-width: $breakpoint-mobile) {
+		flex-basis: 100%;
+		order: 3;
+		margin-inline-end: 0;
+	}
+}
+
+.order-text {
+	display: inline-block;
+	overflow: hidden;
+	max-width: 12em;
+	vertical-align: bottom;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+
+	@media (max-width: $breakpoint-mobile) {
+		max-width: min(46vw, 10em);
+	}
 }
 
 .iconify + span {

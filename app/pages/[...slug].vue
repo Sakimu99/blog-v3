@@ -21,7 +21,16 @@ function setTocAndMeta() {
 
 setTocAndMeta()
 
-if (post.value) {
+if (post.value?.hidden) {
+	const event = useRequestEvent()
+	post.value = null
+	contentStore.toc = undefined
+	contentStore.meta = undefined
+	event && setResponseStatus(event, 404)
+	route.meta.title = '404'
+	layoutStore.setAside(['blog-log'])
+}
+else if (post.value) {
 	useSeoMeta({
 		title: post.value.title,
 		ogType: 'article',

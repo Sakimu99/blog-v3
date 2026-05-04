@@ -25,3 +25,6 @@ logs
 
 # Custom
 .vercel
+content/posts/test.md
+.spec-workflow/*
+

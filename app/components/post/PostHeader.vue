@@ -80,6 +80,11 @@ const { copy, copied } = useCopy(shareText)
 	@media (max-width: $breakpoint-mobile) {
 		margin: 0;
 		border-radius: 0;
+
+		&.has-cover {
+			min-height: 12rem;
+			max-height: 16rem;
+		}
 	}
 
 	&:hover .operations,
@@ -115,6 +120,12 @@ const { copy, copied } = useCopy(shareText)
 	color: var(--c-text-1);
 	transition: opacity 0.2s;
 	z-index: 1;
+
+	@media (max-width: $breakpoint-mobile) {
+		opacity: 1;
+		inset-block-start: 0.75rem;
+		inset-inline-end: 0.75rem;
+	}
 }
 
 .post-cover {
@@ -133,11 +144,20 @@ const { copy, copied } = useCopy(shareText)
 	font-size: 1.6em;
 	line-height: 1.2;
 	z-index: 1;
+
+	@media (max-width: $breakpoint-mobile) {
+		padding: 0.7em 0.85rem;
+		font-size: 1.35em;
+	}
 }
 
 .post-nav {
 	padding: 0.8em 1rem;
 	font-size: 0.8em;
+
+	@media (max-width: $breakpoint-mobile) {
+		padding: 0.7em 0.85rem;
+	}
 
 	.post-info {
 		display: flex;
