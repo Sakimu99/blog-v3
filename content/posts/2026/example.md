@@ -3,7 +3,10 @@ title: 组件样式示例
 draft: true
 date: 2024-09-21 23:18:18
 updated: 2026-04-06 17:25:03
+description: 主题MD组件示例文件
 aside: [toc, meta-aside-foo, meta-aside-bar]
+image: /assets/cover/cover-demotools.png
+recommend: 99999
 # type: story
 ---
 
