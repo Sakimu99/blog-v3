@@ -3,6 +3,7 @@ import { defineCollection } from '@nuxt/content'
 import { defineSitemapSchema } from '@nuxtjs/sitemap/content'
 import { z } from 'zod'
 import blogConfig from './blog.config'
+import { isContentHidden } from './shared/utils/content'
 
 type ArticleType = keyof typeof blogConfig.article.types
 // 文章类型已在 blog.config 中定义，此处使用 any 类型绕过 zod 类型验证
@@ -64,7 +65,7 @@ export const collections = {
 		schema: articleSchema.extend({
 			sitemap: defineSitemapSchema({
 				name: 'content',
-				filter: entry => !entry.hidden,
+				filter: entry => !isContentHidden(entry.hidden, entry.draft),
 				onUrl: (url, entry) => {
 					url.lastmod = new Date(entry.updated || entry.published || entry.date || undefined).toLocaleDateString('sv')
 				},

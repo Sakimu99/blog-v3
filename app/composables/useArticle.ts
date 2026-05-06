@@ -8,9 +8,14 @@ import { orderBy } from 'es-toolkit/array'
  * @todo 支持分页/分类筛选
  */
 export function useArticleIndexOptions(path = 'posts/%') {
-	return queryCollection('content')
+	const query = queryCollection('content')
 		.where('stem', 'LIKE', path)
 		.where('hidden', '=', false)
+
+	if (!import.meta.dev)
+		query.where('draft', '=', false)
+
+	return query
 		.select('categories', 'date', 'description', 'image', 'path', 'readingTime', 'recommend', 'tags', 'title', 'type', 'updated')
 		.all()
 }

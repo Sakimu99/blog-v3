@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { isContentHidden } from '~~/shared/utils/content'
+
 const route = useRoute()
 
 const layoutStore = useLayoutStore()
@@ -21,7 +23,7 @@ function setTocAndMeta() {
 
 setTocAndMeta()
 
-if (post.value?.hidden) {
+if (post.value && isContentHidden(post.value.hidden, post.value.draft)) {
 	const event = useRequestEvent()
 	post.value = null
 	contentStore.toc = undefined
@@ -55,29 +57,29 @@ if (import.meta.dev) {
 </script>
 
 <template>
-	<template v-if="post">
-		<div class="post-reading reading-card">
-			<PostHeader v-bind="post" />
-			<PostExcerpt v-if="excerpt" :excerpt />
-			<!-- 使用 float-in 动画会导致搜索跳转不准确 -->
-			<ContentRenderer
-				class="article"
-				:class="getPostTypeClassName(post?.type, { prefix: 'md' })"
-				:value="post"
-				tag="article"
-			/>
-		</div>
+<template v-if="post">
+	<div class="post-reading reading-card">
+		<PostHeader v-bind="post" />
+		<PostExcerpt v-if="excerpt" :excerpt />
+		<!-- 使用 float-in 动画会导致搜索跳转不准确 -->
+		<ContentRenderer
+			class="article"
+			:class="getPostTypeClassName(post?.type, { prefix: 'md' })"
+			:value="post"
+			tag="article"
+		/>
+	</div>
 
-		<PostFooter v-bind="post" />
-		<PostSurround />
-		<PostComment />
-	</template>
+	<PostFooter v-bind="post" />
+	<PostSurround />
+	<PostComment />
+</template>
 
-	<ZError
-		v-else
-		icon="line-md:document-delete-twotone"
-		title="内容为空或页面不存在"
-	/>
+<ZError
+	v-else
+	icon="line-md:document-delete-twotone"
+	title="内容为空或页面不存在"
+/>
 </template>
 
 <style lang="scss" scoped>
