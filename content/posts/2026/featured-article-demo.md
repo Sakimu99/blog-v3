@@ -8,6 +8,7 @@ tags: [精选, 演示, Blog]
 type: tech
 image: /assets/Yuki.jpg
 recommend: 100
+draft: true
 ---
 
 ## 这篇文章为什么会出现在精选区域
