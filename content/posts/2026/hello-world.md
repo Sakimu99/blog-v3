@@ -5,6 +5,8 @@ date: 2026-04-24 00:00:00
 updated: 2026-04-24 00:00:00
 categories: [开发]
 tags: [HelloWorld, Nuxt, Blog]
+image: assets/cover/cover-helloworld.png
+recommend: 10
 ---
 
 ## Hello World

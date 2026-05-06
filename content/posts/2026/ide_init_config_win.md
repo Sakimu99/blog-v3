@@ -3,9 +3,10 @@ title: 一行命令解锁JetBrains全家桶！
 description: 天下苦付费久矣，作为学生党自然是要用学习版！
 date: 2026-05-05 17:54:54
 updated: 2026-05-05 17:54:54
-image: # 封面图推荐 2:1，不含与标题重复的文字
+image: assets/cover/cover-jetbrains.png
 categories: [技术]
 tags: [Dev, IDEA, tool]
+recommend: 100
 ---
 
 ### 前言
