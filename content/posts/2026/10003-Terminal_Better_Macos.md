@@ -58,6 +58,7 @@ src: assets/blog_image/10003-01.png
 执行`brew --version`查看是否有输出版本信息，有则代表安装成功。
 
 **更换到国内下载源**
+
   执行以下命令（三选一）：
   ```sh
   git -C "$(brew --repo)" remote set-url origin https://mirrors.ustc.edu.cn/brew.git # 中科大
@@ -67,6 +68,7 @@ src: assets/blog_image/10003-01.png
 
 
 **恢复默认源**
+
   如果国内源不可用，或者某些因素导致我们需要切回原本的默认源，执行以下命令即可：
   ```sh
   git -C "$(brew --repo)" remote set-url origin https://github.com/Homebrew/brew.git
