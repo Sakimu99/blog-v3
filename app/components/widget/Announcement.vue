@@ -22,6 +22,7 @@ const items = computed<AnnouncementItem[]>(() => {
 	})
 })
 
+const isClient = import.meta.client
 const currentIndex = ref(0)
 const currentItem = computed(() => items.value[currentIndex.value] ?? { content: '' })
 const hasMultipleItems = computed(() => items.value.length > 1)
@@ -46,6 +47,11 @@ watch(items, (value) => {
 	if (currentIndex.value >= value.length)
 		currentIndex.value = 0
 
+	if (!isClient) {
+		pause()
+		return
+	}
+
 	if (value.length > 1)
 		resume()
 	else
@@ -54,7 +60,7 @@ watch(items, (value) => {
 
 watch(interval, () => {
 	pause()
-	if (hasMultipleItems.value)
+	if (isClient && hasMultipleItems.value)
 		resume()
 })
 
