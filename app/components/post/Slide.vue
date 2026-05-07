@@ -34,7 +34,7 @@ useEventListener(carouselEl, 'wheel', (e) => {
 		<span class="title text-creative">精选文章</span>
 		<div class="at-slide-hover">
 			<Icon name="tabler:mouse" />
-			滑动浏览精选文章
+			按住滑动浏览精选文章
 		</div>
 	</div>
 

@@ -15,9 +15,16 @@ const segmenter = Intl.Segmenter && new Intl.Segmenter(appConfig.language, { gra
 // await useAsyncData() 会阻塞渲染
 const { data, status } = await useLazyAsyncData(
 	'search',
-	() => queryCollectionSearchSections('content', {
-		ignoredTags: ['pre'],
-	}).where('hidden', '=', false),
+	() => {
+		const query = queryCollectionSearchSections('content', {
+			ignoredTags: ['pre'],
+		}).where('hidden', '=', false)
+
+		if (!import.meta.dev)
+			query.where('draft', '=', false)
+
+		return query
+	},
 )
 
 const miniSearch = new MiniSearch({
@@ -90,63 +97,63 @@ function openActiveItem() {
 </script>
 
 <template>
-	<Transition name="search-mask">
-		<div v-if="open" class="search-overlay" :style="{ zIndex: props.style?.zIndex }" @click="$emit('close')" />
-	</Transition>
+<Transition name="search-mask">
+	<div v-if="open" class="search-overlay" :style="{ zIndex: props.style?.zIndex }" @click="$emit('close')" />
+</Transition>
 
-	<Transition name="float-in">
-		<div v-if="open" class="search-wrap" :style="{ zIndex: props.style?.zIndex }">
-			<div class="blog-search" @click.stop>
-				<form class="input" @submit.prevent>
-					<Icon v-show="false" name="line-md:loading-alt-loop" />
-					<Icon :name="status === 'pending' ? 'line-md:loading-alt-loop' : 'tabler:search'" />
+<Transition name="float-in">
+	<div v-if="open" class="search-wrap" :style="{ zIndex: props.style?.zIndex }">
+		<div class="blog-search" @click.stop>
+			<form class="input" @submit.prevent>
+				<Icon v-show="false" name="line-md:loading-alt-loop" />
+				<Icon :name="status === 'pending' ? 'line-md:loading-alt-loop' : 'tabler:search'" />
 
-					<!-- 方向键切换搜索结果不应只在搜索框内触发 -->
-					<input
-						ref="searchInput"
-						v-model="word"
-						type="search"
-						incremental
-						class="search-input"
-						placeholder="键入开始搜索"
-						@keydown.up.prevent
-						@keydown.down.prevent
-					>
-				</form>
+				<!-- 方向键切换搜索结果不应只在搜索框内触发 -->
+				<input
+					ref="searchInput"
+					v-model="word"
+					type="search"
+					incremental
+					class="search-input"
+					placeholder="键入开始搜索"
+					@keydown.up.prevent
+					@keydown.down.prevent
+				>
+			</form>
 
-				<TransitionGroup name="expand">
-					<div v-if="debouncedWord && status === 'success' && !result.length" class="no-result">
-						无结果
-					</div>
+			<TransitionGroup name="expand">
+				<div v-if="debouncedWord && status === 'success' && !result.length" class="no-result">
+					无结果
+				</div>
 
-					<menu
-						v-if="result.length"
-						ref="list-result"
-						:key="result.length < 5 ? result.length : result[0]?.id"
-						class="scrollcheck-y search-result"
-					>
-						<PopoverSearchItem
-							v-for="(item, itemIndex) in result"
-							:key="item.id"
-							v-bind="item"
-							:class="{ active: activeIndex === itemIndex }"
-							@mousemove="updateActiveIndex(itemIndex)"
-						/>
-					</menu>
+				<menu
+					v-if="result.length"
+					ref="list-result"
+					:key="result.length < 5 ? result.length : result[0]?.id"
+					class="scrollcheck-y search-result"
+				>
+					<PopoverSearchItem
+						v-for="(item, itemIndex) in result"
+						:key="item.id"
+						v-bind="item"
+						:class="{ active: activeIndex === itemIndex }"
+						@mousemove="updateActiveIndex(itemIndex)"
+					/>
+				</menu>
 
-					<div v-if="result.length" class="tip" @click="searchInput?.focus()">
-						<Key code="ArrowUp" prevent @press="updateActiveIndex(activeIndex - 1, true)" />
-						<Key code="ArrowDown" prevent @press="updateActiveIndex(activeIndex + 1, true)" />
-						切换&emsp;
-						<Key code="Enter" icon @press="openActiveItem" />
-						选择&emsp;
-						<Key code="Escape" :icon="false" @press="$emit('close')" />
-						关闭
-					</div>
-				</TransitionGroup>
-			</div>
+				<div v-if="result.length" class="tip" @click="searchInput?.focus()">
+					<Key code="ArrowUp" prevent @press="updateActiveIndex(activeIndex - 1, true)" />
+					<Key code="ArrowDown" prevent @press="updateActiveIndex(activeIndex + 1, true)" />
+					切换&emsp;
+					<Key code="Enter" icon @press="openActiveItem" />
+					选择&emsp;
+					<Key code="Escape" :icon="false" @press="$emit('close')" />
+					关闭
+				</div>
+			</TransitionGroup>
 		</div>
-	</Transition>
+	</div>
+</Transition>
 </template>
 
 <style lang="scss" scoped>

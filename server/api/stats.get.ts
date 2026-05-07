@@ -19,9 +19,13 @@ export default defineEventHandler(async (event) => {
 
 	const existedPath = new Map()
 
-	const posts = await queryCollection(event, 'content')
+	const query = queryCollection(event, 'content')
 		.where('hidden', '=', false)
-		.all()
+
+	if (!import.meta.dev)
+		query.where('draft', '=', false)
+
+	const posts = await query.all()
 
 	const findOrCreateCategory = (
 		name: string,

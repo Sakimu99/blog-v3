@@ -41,9 +41,14 @@ function renderContent(post: ContentCollectionItem) {
 }
 
 export default defineEventHandler(async (event) => {
-	const posts = await queryCollection(event, 'content')
+	const query = queryCollection(event, 'content')
 		.where('stem', 'LIKE', 'posts/%')
 		.where('hidden', '=', false)
+
+	if (!import.meta.dev)
+		query.where('draft', '=', false)
+
+	const posts = await query
 		.order('updated', 'DESC')
 		.limit(blogConfig.feed.limit)
 		.all()

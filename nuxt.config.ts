@@ -238,6 +238,18 @@ ${packageJson.homepage}
 		domain: blogConfig.url,
 		title: blogConfig.title,
 		description: blogConfig.description,
+		contentRawMarkdown: false,
+		sections: [
+			{
+				title: 'Content',
+				contentCollection: 'content',
+				contentFilters: [
+					{ field: 'extension', operator: '=', value: 'md' },
+					{ field: 'hidden', operator: '=', value: false },
+					{ field: 'draft', operator: '=', value: false },
+				],
+			},
+		],
 	},
 
 	ogImage: {

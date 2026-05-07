@@ -2,7 +2,7 @@ import type { Nav, NavItem } from '~/types/nav'
 import { pascalCase } from 'es-toolkit/string'
 import { Temporal } from 'temporal-polyfill'
 import blogConfig from '~~/blog.config'
-import { name, version } from '~~/package.json'
+import { name } from '~~/package.json'
 
 // 图标查询：https://yesicon.app/ph?s=bold
 // 图标插件：https://marketplace.visualstudio.com/items?itemName=antfu.iconify
@@ -128,6 +128,18 @@ export default defineAppConfig({
 		dark: {
 			icon: 'tabler:moon',
 			tip: '深色模式',
+		},
+	},
+
+	widget: {
+		announcement: {
+			title: '公告',
+			interval: 5000,
+			items: [
+				'本站已切换到全新的Clarity主题，新内容会持续更新，欢迎常来看看。',
+				'如果有帮助到您，欢迎加群一起沟通交流。',
+				'本站从2026年05月01日开始正式运行。',
+			],
 		},
 	},
 })

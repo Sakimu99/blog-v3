@@ -64,7 +64,7 @@ export const collections = {
 		schema: articleSchema.extend({
 			sitemap: defineSitemapSchema({
 				name: 'content',
-				filter: entry => !entry.hidden,
+				filter: entry => !entry.hidden && (!entry.draft || import.meta.dev),
 				onUrl: (url, entry) => {
 					url.lastmod = new Date(entry.updated || entry.published || entry.date || undefined).toLocaleDateString('sv')
 				},
