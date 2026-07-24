@@ -121,14 +121,6 @@ export default defineAppConfig({
 			icon: 'tabler:sun',
 			tip: '浅色模式',
 		},
-		system: {
-			icon: 'tabler:device-desktop',
-			tip: '跟随系统',
-		},
-		dark: {
-			icon: 'tabler:moon',
-			tip: '深色模式',
-		},
 	},
 
 	widget: {

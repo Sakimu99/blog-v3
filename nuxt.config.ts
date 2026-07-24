@@ -19,7 +19,7 @@ export default defineNuxtConfig({
 		head: {
 			meta: [
 				{ name: 'author', content: [blogConfig.author.name, blogConfig.author.email].filter(Boolean).join(', ') },
-				{ name: 'color-scheme', content: 'light dark' },
+				{ name: 'color-scheme', content: 'light' },
 				// 此处为元数据的生成器标识，不建议修改
 				{ 'name': 'generator', 'content': `${pascalCase(packageJson.name)} ${packageJson.version}`, 'data-github-repo': packageJson.homepage },
 				{ name: 'mobile-web-app-capable', content: 'yes' },
@@ -149,19 +149,12 @@ export default defineNuxtConfig({
 		'@nuxt/hints',
 		'@nuxt/icon',
 		'@nuxt/image',
-		'@nuxtjs/color-mode',
 		'@nuxtjs/seo',
 		'@pinia/nuxt',
 		'@vueuse/nuxt',
 		'nuxt-llms',
 		'unplugin-yaml/nuxt',
 	],
-
-	colorMode: {
-		preference: 'system',
-		fallback: 'light',
-		classSuffix: '',
-	},
 
 	content: {
 		build: {

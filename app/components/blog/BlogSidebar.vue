@@ -44,7 +44,6 @@ const searchPreviewText = computed(() => debouncedSelection.value || searchStore
 	</nav>
 
 	<footer class="sidebar-footer">
-		<BlogThemeToggle />
 		<ZIconNavList :list="appConfig.footer.iconNav" />
 	</footer>
 </aside>
