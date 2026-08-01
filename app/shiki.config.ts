@@ -44,8 +44,8 @@ export function getShikiOptions(lang: string, transformerOptions?: CustomTransfo
 }
 
 export default defineConfig({
+	// 站点固定为亮色主题，避免构建和客户端加载未使用的暗色代码高亮主题。
 	themes: {
 		light: () => import('shiki/themes/catppuccin-latte.mjs'),
-		dark: () => import('shiki/themes/one-dark-pro.mjs'),
 	},
 })

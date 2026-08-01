@@ -46,7 +46,6 @@ catalogs:
     '@iconify-json/simple-icons': ^1.2.77
     '@nuxt/icon': ^2.2.1
     '@nuxt/image': ^2.0.0
-    '@nuxtjs/color-mode': ^4.0.0
     embla-carousel-autoplay: ^8.6.0
     embla-carousel-vue: ^8.6.0
     embla-carousel-wheel-gestures: ^8.1.0

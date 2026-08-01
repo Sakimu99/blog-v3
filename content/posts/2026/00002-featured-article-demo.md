@@ -6,7 +6,7 @@ updated: 2026-04-28 21:00:00
 categories: [开发]
 tags: [精选, 演示, Blog]
 type: tech
-image: /assets/Yuki.jpg
+image: /assets/Yuki.webp
 recommend: 100
 draft: true
 ---
@@ -25,7 +25,7 @@ draft: true
 也就是说，只要像这篇文章一样加上：
 
 ```yaml
-image: /assets/Yuki.jpg
+image: /assets/Yuki.webp
 recommend: 100
 ```
 
@@ -40,7 +40,7 @@ title: 你的文章标题
 description: 一句话描述
 date: 2026-04-28 21:00:00
 categories: [开发]
-image: /assets/Yuki.jpg
+image: /assets/Yuki.webp
 recommend: 100
 ```
 
