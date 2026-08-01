@@ -13,6 +13,7 @@ function flattenFeedGroups(groups: FeedGroup[]): FeedEntry[] {
 	return groups.flatMap(g => g.entries)
 }
 
+/** 统一友链在脚本和页面中的标题回退规则。 */
 export function displayName(e: FeedEntry): string {
 	return (e.title?.trim() || e.sitenick?.trim() || e.author?.trim() || '(无标题)')!
 }

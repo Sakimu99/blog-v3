@@ -5,11 +5,7 @@ import process from 'node:process'
 import { cancel, intro, isCancel, outro, select, text } from '@clack/prompts'
 import { mapValues } from 'es-toolkit/object'
 import { Temporal } from 'temporal-polyfill'
-import { entries, getLinkInfo } from './utils'
-
-function displayName(e: FeedEntry): string {
-	return (e.title || e.sitenick || e.author || '(无标题)').trim()
-}
+import { displayName, entries, getLinkInfo } from './utils'
 
 function matches(q: string, e: FeedEntry): boolean {
 	const hay = Object.values(e).join('\n').toLowerCase()
