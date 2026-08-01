@@ -37,3 +37,8 @@ giscus-local-comment.png
 /server/utils/bot-html.ts
 /server/utils/bot.ts
 
+# Wrangler generated diagnostics and bindings
+.wrangler/
+worker-startup.cpuprofile
+worker/worker-configuration.d.ts
+
