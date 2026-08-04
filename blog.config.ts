@@ -79,7 +79,7 @@ const blogConfig = {
 		inputPosition: 'bottom',
 		lang: 'zh-CN',
 		mapping: 'pathname',
-		reactionsEnabled: '1',
+		reactionsEnabled: '0',
 		repo: 'Sakimu99/blog-v3',
 		repoId: 'R_kgDOSLLDgg',
 		strict: '1',
