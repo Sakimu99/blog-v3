@@ -4,6 +4,7 @@ description: 自建 Twikoo 要维护服务、还会休眠,静态博客能不能�
 date: 2026-08-02 02:30:00
 updated: 2026-08-02 02:30:00
 image: assets/cover/cover-giscus-comment.png
+recommend: 50
 categories: [开发]
 tags: [Giscus, Nuxt, 博客, 评论系统, GitHub]
 references:

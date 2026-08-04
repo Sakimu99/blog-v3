@@ -4,6 +4,7 @@ description: 家里只有 IPv6 公网,没有公网 IPv4,怎么把微信接入自
 date: 2026-08-02 01:40:00
 updated: 2026-08-02 01:40:00
 image: assets/cover/cover-weixin-hermes-bot.png
+recommend: 50
 categories: [技术]
 tags: [Hermes, 微信, 树莓派, HomeLab, 运维]
 references:
