@@ -17,7 +17,9 @@ withDefaults(defineProps<{
 <div class="error proper-height">
 	<div />
 	<Icon class="error-icon" :name="icon" />
-	<div class="error-title" v-html="title" />
+	<div class="error-title">
+			{{ title }}
+		</div>
 
 	<div class="operation">
 		<slot name="operation" />

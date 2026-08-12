@@ -1,10 +1,10 @@
-import type { ContentCollectionItem } from '@nuxt/content'
 import { pascalCase } from 'es-toolkit/string'
 import XmlBuilder from 'fast-xml-builder'
 import { Temporal } from 'temporal-polyfill'
 import blogConfig from '~~/blog.config'
 import packageJson from '~~/package.json'
 import { toZonedTemporal } from '~~/shared/utils/time'
+import { getBlogUrl, renderAtomContent } from '../utils/atom-feed'
 
 const runtimeConfig = useRuntimeConfig()
 
@@ -28,18 +28,6 @@ function formatIsoDate(date?: string) {
 	}
 }
 
-function getUrl(path: string | undefined) {
-	return new URL(path ?? '', blogConfig.url).toString()
-}
-
-function renderContent(post: ContentCollectionItem) {
-	return [
-		post.image && `<img src="${post.image}" alt="${post.title}" />`,
-		post.description && `<p>${post.description}</p>`,
-		`<a class="view-full" href="${getUrl(post.path)}" target="_blank">点击查看全文</a>`,
-	].join(' ')
-}
-
 export default defineEventHandler(async (event) => {
 	const query = queryCollection(event, 'content')
 		.where('stem', 'LIKE', 'posts/%')
@@ -54,15 +42,15 @@ export default defineEventHandler(async (event) => {
 		.all()
 
 	const entries = posts.map(post => ({
-		id: getUrl(post.path),
+		id: getBlogUrl(post.path),
 		title: post.title ?? '',
 		updated: formatIsoDate(post.updated),
 		author: { name: post.author || blogConfig.author.name },
 		content: {
 			$type: 'html',
-			$: renderContent(post),
+			$: renderAtomContent(post),
 		},
-		link: { $href: getUrl(post.path) },
+		link: { $href: getBlogUrl(post.path) },
 		summary: post.description,
 		category: { $term: post.categories?.[0] },
 		published: formatIsoDate(post.published ?? post.date),
@@ -80,7 +68,7 @@ export default defineEventHandler(async (event) => {
 			uri: blogConfig.author.homepage,
 		},
 		link: [
-			{ $href: getUrl('atom.xml'), $rel: 'self' },
+			{ $href: getBlogUrl('atom.xml'), $rel: 'self' },
 			{ $href: blogConfig.url, $rel: 'alternate' },
 		],
 		language: blogConfig.language, // RSS 2.0

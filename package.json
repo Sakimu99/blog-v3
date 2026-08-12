@@ -24,6 +24,9 @@
     "bump": "pnpx taze -w && rimraf pnpm-lock.yaml && pnpm update && pnpm dedupe",
     "lint": "eslint && stylelint '**/*.{vue,scss}'",
     "lint:fix": "eslint --fix && stylelint '**/*.{vue,scss}' --fix",
+    "typecheck": "nuxt prepare && tsc --noEmit",
+    "test:unit": "vitest run",
+    "test:unit:watch": "vitest",
     "init-project": "tsx scripts/init-project",
     "new": "tsx scripts/new-blog",
     "check:feed": "tsx scripts/framework/get-feed",
@@ -89,6 +92,7 @@
     "tsx": "catalog:framework",
     "typescript": "catalog:framework",
     "unplugin-yaml": "catalog:framework",
-    "wrangler": "^4.118.0"
+    "vitest": "catalog:quality",
+    "wrangler": "catalog:"
   }
 }

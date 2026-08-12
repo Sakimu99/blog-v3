@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import tools from "~/tools";
+import tools from '~/tools'
 
-const appConfig = useAppConfig();
-const layoutStore = useLayoutStore();
-layoutStore.setAside([]);
+const appConfig = useAppConfig()
+const layoutStore = useLayoutStore()
+layoutStore.setAside([])
 
 useSeoMeta({
-	title: "工具",
+	title: '工具',
 	description: `${appConfig.title}整理的常用工具集合，点击卡片可跳转到对应站点。`,
-});
+})
 </script>
 
 <template>

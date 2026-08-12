@@ -35,6 +35,23 @@ function isHtmlResponse(response: Response): boolean {
 	return response.headers.get('Content-Type')?.toLowerCase().includes('text/html') ?? false
 }
 
+function applySecurityHeaders(headers: Headers) {
+	headers.set('X-Content-Type-Options', 'nosniff')
+	headers.set('Referrer-Policy', 'strict-origin-when-cross-origin')
+	headers.set('X-Frame-Options', 'DENY')
+	headers.set('Permissions-Policy', 'camera=(), geolocation=(), microphone=(), payment=(), usb=()')
+}
+
+function createSecureResponse(response: Response): Response {
+	const headers = new Headers(response.headers)
+	applySecurityHeaders(headers)
+	return new Response(response.body, {
+		status: response.status,
+		statusText: response.statusText,
+		headers,
+	})
+}
+
 function createBotResponse(originResponse: Response): Response {
 	const transformedResponse = transformBotHtml(originResponse)
 	const headers = new Headers(transformedResponse.headers)
@@ -47,6 +64,7 @@ function createBotResponse(originResponse: Response): Response {
 	headers.set('Content-Type', 'text/html; charset=utf-8')
 	headers.set('X-Bot-Rendered', '1')
 	headers.set('X-Bot-Source', 'pages-origin')
+	applySecurityHeaders(headers)
 
 	return new Response(transformedResponse.body, {
 		status: transformedResponse.status,
@@ -65,7 +83,7 @@ export default {
 			originResponse = await fetch(createOriginRequest(request))
 		}
 		catch {
-			return new Response('Bad Gateway', { status: 502 })
+			return createSecureResponse(new Response('Bad Gateway', { status: 502 }))
 		}
 
 		const shouldTransform = request.method === 'GET'
@@ -74,6 +92,6 @@ export default {
 			&& originResponse.status === 200
 			&& isHtmlResponse(originResponse)
 
-		return shouldTransform ? createBotResponse(originResponse) : originResponse
+		return shouldTransform ? createBotResponse(originResponse) : createSecureResponse(originResponse)
 	},
 } satisfies ExportedHandler

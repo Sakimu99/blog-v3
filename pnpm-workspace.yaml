@@ -37,6 +37,7 @@ catalogs:
     cspell: ^10.0.0
     eslint: ^10.2.0
     stylelint: ^17.6.0
+    vitest: ^4.1.0
   ui:
     '@bikariya/image-viewer': ^0.0.8
     '@bikariya/modals': ^0.0.8
@@ -86,3 +87,5 @@ patchedDependencies:
   playwright-core: patches/playwright-core.patch
 
 shamefullyHoist: true
+catalog:
+  wrangler: ^4.118.0

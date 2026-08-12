@@ -167,6 +167,23 @@ pnpm generate
 pnpm preview
 ```
 
+### 质量检查
+
+在提交或部署前，请执行：
+
+```sh
+pnpm lint
+pnpm typecheck
+pnpm test:unit
+pnpm generate
+```
+
+GitHub Actions 会在推送和 Pull Request 中以冻结的 lockfile 运行以上检查，不会自动部署 Cloudflare Worker。`pnpm worker:check` 和 `pnpm worker:deploy` 仅应由具备 Cloudflare 权限的维护者在受控环境中手动执行。
+
+链接仅允许站内路径、锚点和 HTTP(S) URL；错误信息与 Feed 元数据会按文本处理。仓库内 Markdown 当前视为可信内容，若后续接入用户投稿或远程 Markdown，必须额外加入 HTML 清洗策略。
+
+Nuxt 运行时与 Worker 会添加基础安全响应头；采用纯静态托管时，最终响应头仍应在 CDN 或托管平台上配置并对生产域名复核。现有外部字体、统计、Giscus、视频和图片来源尚未启用强制 CSP，需先使用 Report-Only 策略验证后再收紧。
+
 ### 部署指南
 
 支持 Vercel、Netlify、Cloudflare Pages、EdgeOne 等平台部署。建议采用静态（SSG）部署方式：
