@@ -100,6 +100,9 @@ const appConfig = useAppConfig()
 @font-face {
 	font-family: AlimamaFangYuanTi;
 	src: url("/fonts/AlimamaFangYuanTi.woff2");
+
+	// 避免字体加载期间标题不可见（FOIT），先用后备字体渲染
+	font-display: swap;
 }
 
 .blog-text {

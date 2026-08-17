@@ -1,0 +1,15 @@
+# Cloudflare Pages 响应头配置
+# https://developers.cloudflare.com/pages/configuration/headers/
+# 注意：/_nuxt/* 由 Pages 自动附加 immutable 长缓存，无需在此重复声明。
+
+# 静态图片与字体使用内容稳定的路径，可安全长缓存。
+# 更换素材时请一并更换文件名，否则边缘节点将持续返回旧资源。
+/assets/*
+  Cache-Control: public, max-age=2592000
+
+/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# @nuxt/image 生成的派生图，URL 已包含尺寸与格式修饰符。
+/_ipx/*
+  Cache-Control: public, max-age=31536000, immutable
