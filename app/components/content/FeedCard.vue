@@ -13,6 +13,10 @@ const title = computed(() => props.title ?? props.sitenick ?? props.author)
 const domainTip = computed(() => getDomainType(getMainDomain(props.link, true)))
 const domainIcon = computed(() => getDomainIcon(props.link))
 
+function formatDate(date: string) {
+	return Temporal.PlainDate.from(date).toLocaleString()
+}
+
 function getInspectStyle(src: string): CSSProperties {
 	src = getMainDomain(src)
 	let color = 'red'
@@ -78,7 +82,7 @@ function getInspectStyle(src: string): CSSProperties {
 		</div>
 		<div class="desc-content">
 			<div class="date">
-				{{ Temporal.PlainDate.from(date).toLocaleString() }}
+				{{ formatDate(date) }}
 			</div>
 
 			<p>{{ error ?? desc }}</p>

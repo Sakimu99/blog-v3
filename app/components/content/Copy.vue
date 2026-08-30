@@ -44,8 +44,12 @@ onMounted(async () => {
 	const shiki = await shikiStore.load()
 	await shikiStore.loadLang(language.value)
 
+	// 上述异步加载期间组件可能已卸载，此时模板引用为空，不应继续挂载
+	if (!codeInput.value)
+		return
+
 	createPlainShiki(shiki).mount(
-		codeInput.value!,
+		codeInput.value,
 		getShikiOptions(language.value),
 	)
 })

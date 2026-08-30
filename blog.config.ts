@@ -72,21 +72,28 @@ const blogConfig = {
 		enableStyle: true,
 	},
 
+	/** Giscus 评论配置；所有字段均为公开前端配置 */
+	giscus: {
+		category: 'Announcements',
+		categoryId: 'DIC_kwDOSLLDgs4DCd0M',
+		inputPosition: 'bottom',
+		lang: 'zh-CN',
+		mapping: 'pathname',
+		reactionsEnabled: '0',
+		repo: 'Sakimu99/blog-v3',
+		repoId: 'R_kgDOSLLDgg',
+		strict: '1',
+		theme: 'light',
+	},
+
 	/** 向 <head> 中添加脚本 */
 	scripts: [
 		// Umami 访问统计
 		{ 'src': 'https://cloud.umami.is/script.js', 'data-website-id': '5909ad17-6204-410e-8ebe-64328ac0e9f1', 'defer': true },
 		// 自己网站的 Cloudflare Insights 统计服务
 		{ 'src': 'https://static.cloudflareinsights.com/beacon.min.js', 'data-cf-beacon': '{"token": "c42b56e680b7466bab14c87c007d36be"}', 'defer': true },
-		// Twikoo 评论系统
-		{ src: 'https://lib.baomitu.com/twikoo/1.6.44/twikoo.min.js', defer: true },
 	],
 
-	/** 自己部署的 Twikoo 服务 */
-	twikoo: {
-		envId: 'https://sakimu-twikoo.hf.space',
-		preload: 'https://sakimu-twikoo.hf.space',
-	},
 }
 
 /** 用于生成 OPML 和友链页面配置 */

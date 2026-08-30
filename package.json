@@ -12,14 +12,21 @@
   "scripts": {
     "prepare": "pnpm clean && nuxt prepare",
     "clean": "rimraf .data node_modules/.cache",
-    "dev": "nuxt dev --open",
+    "dev": "nuxt dev --host 127.0.0.1 --port 3000 --open",
     "dev:host": "nuxt dev --host",
     "build": "nuxt build",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
+    "worker:check": "wrangler deploy --dry-run",
+    "worker:deploy": "wrangler deploy",
+    "worker:dev": "wrangler dev",
+    "worker:types": "wrangler types ./worker/worker-configuration.d.ts",
     "bump": "pnpx taze -w && rimraf pnpm-lock.yaml && pnpm update && pnpm dedupe",
     "lint": "eslint && stylelint '**/*.{vue,scss}'",
     "lint:fix": "eslint --fix && stylelint '**/*.{vue,scss}' --fix",
+    "typecheck": "nuxt prepare && tsc --noEmit",
+    "test:unit": "vitest run",
+    "test:unit:watch": "vitest",
     "init-project": "tsx scripts/init-project",
     "new": "tsx scripts/new-blog",
     "check:feed": "tsx scripts/framework/get-feed",
@@ -32,7 +39,6 @@
     "@nuxt/content": "catalog:content",
     "@nuxt/icon": "catalog:ui",
     "@nuxt/image": "catalog:ui",
-    "@nuxtjs/color-mode": "catalog:ui",
     "@nuxtjs/seo": "catalog:content",
     "@pinia/nuxt": "catalog:util",
     "@shikijs/colorized-brackets": "catalog:content",
@@ -46,6 +52,7 @@
     "embla-carousel-vue": "catalog:ui",
     "embla-carousel-wheel-gestures": "catalog:ui",
     "es-toolkit": "catalog:util",
+    "minimark": "catalog:content",
     "minisearch": "catalog:util",
     "nuxt": "catalog:framework",
     "parse-domain": "catalog:util",
@@ -84,6 +91,8 @@
     "stylelint": "catalog:quality",
     "tsx": "catalog:framework",
     "typescript": "catalog:framework",
-    "unplugin-yaml": "catalog:framework"
+    "unplugin-yaml": "catalog:framework",
+    "vitest": "catalog:quality",
+    "wrangler": "catalog:"
   }
 }

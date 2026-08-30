@@ -176,12 +176,6 @@ img {
 .shiki > .line {
 	> span {
 		font-style: var(--shiki-light-font-style);
-
-		.dark & {
-			background-color: var(--shiki-dark-bg) !important;
-			font-style: var(--shiki-dark-font-style);
-			color: var(--shiki-dark) !important;
-		}
 	}
 
 	.indent {

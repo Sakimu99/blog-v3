@@ -24,12 +24,13 @@
 <style lang="scss" scoped>
 .title {
 	background-clip: text;
-	background-image: linear-gradient(
-		60deg,
-		var(--c-accent) -30%,
-		var(--c-primary),
-		var(--c-text-1)
-	);
+	background-image:
+		linear-gradient(
+			60deg,
+			var(--c-accent) -30%,
+			var(--c-primary),
+			var(--c-text-1)
+		);
 	background-position: 100% 0;
 	background-size: 200%;
 	font-size: 1.8em;

@@ -139,7 +139,7 @@ pnpm init-project # 初始化项目配置
 ```
 
 - 在启动或部署项目时，你需要移除我的文章、我的个人信息、我的统计/评论配置。
-  - `blog.config.ts` 中的站点信息、Umami 站点统计、Cloudflare Insights 统计、Twikoo 评论服务源。
+  - `blog.config.ts` 中的站点信息、Umami 站点统计、Cloudflare Insights 统计、Giscus 评论配置。
   - `app.config.ts` 中的页脚导航、出生年份等。
 
 - 为保证开发体验，需要安装 ESLint、Stylelint 等 VS Code 扩展。如果你不喜欢此项目的格式化风格，可以在 `./eslint.config.mjs` 和 `./.vscode/settings.json` 中调整或者不安装 VS Code 扩展。
@@ -167,6 +167,23 @@ pnpm generate
 pnpm preview
 ```
 
+### 质量检查
+
+在提交或部署前，请执行：
+
+```sh
+pnpm lint
+pnpm typecheck
+pnpm test:unit
+pnpm generate
+```
+
+GitHub Actions 会在推送和 Pull Request 中以冻结的 lockfile 运行以上检查，不会自动部署 Cloudflare Worker。`pnpm worker:check` 和 `pnpm worker:deploy` 仅应由具备 Cloudflare 权限的维护者在受控环境中手动执行。
+
+链接仅允许站内路径、锚点和 HTTP(S) URL；错误信息与 Feed 元数据会按文本处理。仓库内 Markdown 当前视为可信内容，若后续接入用户投稿或远程 Markdown，必须额外加入 HTML 清洗策略。
+
+Nuxt 运行时与 Worker 会添加基础安全响应头；采用纯静态托管时，最终响应头仍应在 CDN 或托管平台上配置并对生产域名复核。现有外部字体、统计、Giscus、视频和图片来源尚未启用强制 CSP，需先使用 Report-Only 策略验证后再收紧。
+
 ### 部署指南
 
 支持 Vercel、Netlify、Cloudflare Pages、EdgeOne 等平台部署。建议采用静态（SSG）部署方式：
@@ -176,6 +193,16 @@ pnpm preview
 - 安装命令: `pnpm i`
 
 如果直接使用平台提供的“Nuxt”预设部署，则会变成 SSR 模式，此模式每次访问都会等待服务端重新渲染。请参阅 [Nuxt 文档](https://nuxt.com/docs/getting-started/deployment) 和 [Nuxt Content 文档](https://content.nuxt.com/docs/deploy/static) 的“部署”一节。
+
+#### Giscus 评论
+
+本项目使用 [Giscus](https://giscus.app/zh-CN) 将评论保存到 GitHub Discussions，静态部署不需要数据库、服务端 API 或额外环境变量。
+
+- 评论仓库必须为公开仓库，并启用 Discussions。
+- 为仓库安装 Giscus GitHub App，并只授予需要接收评论的仓库权限。
+- 在 `blog.config.ts` 中配置公开的 `repoId`、`categoryId` 和 Discussion 分类；这些标识可以出现在前端产物中，切勿添加 GitHub Personal Access Token 等敏感凭据。
+- 当前采用 `Announcements` 分类和 `pathname` 严格映射：每个站内路径会在首次评论或反应时创建对应的 Discussion；访客需要登录 GitHub 才能评论。
+- 从 Twikoo 切换后，原服务中的历史评论不会显示在 Giscus 中；如需迁移，请单独验证数据导出和映射策略。
 
 #### 疑难解答
 

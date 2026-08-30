@@ -24,7 +24,9 @@ const emit = defineEmits<{
 	press: []
 }>()
 
-const isMac = computed(() => /mac ?os/i.test(navigator?.userAgent))
+const macOsPattern = /mac ?os/i
+
+const isMac = computed(() => macOsPattern.test(navigator?.userAgent))
 const useSymbol = computed(() => isMac.value ? props.icon !== false : props.icon)
 const keyJoiner = computed(() => useSymbol.value ? '' : '+')
 

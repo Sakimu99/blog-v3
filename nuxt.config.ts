@@ -19,7 +19,7 @@ export default defineNuxtConfig({
 		head: {
 			meta: [
 				{ name: 'author', content: [blogConfig.author.name, blogConfig.author.email].filter(Boolean).join(', ') },
-				{ name: 'color-scheme', content: 'light dark' },
+				{ name: 'color-scheme', content: 'light' },
 				// 此处为元数据的生成器标识，不建议修改
 				{ 'name': 'generator', 'content': `${pascalCase(packageJson.name)} ${packageJson.version}`, 'data-github-repo': packageJson.homepage },
 				{ name: 'mobile-web-app-capable', content: 'yes' },
@@ -27,7 +27,8 @@ export default defineNuxtConfig({
 			link: [
 				{ rel: 'icon', href: blogConfig.favicon },
 				{ rel: 'alternate', type: 'application/atom+xml', href: '/atom.xml' },
-				{ rel: 'preconnect', href: blogConfig.twikoo.preload },
+				// 站点背景图为 LCP 元素，但由 CSS 引入导致发现过晚，此处提前声明
+				{ rel: 'preload', as: 'image', href: '/assets/Yuki.webp', fetchpriority: 'high' },
 				{ rel: 'stylesheet', href: 'https://lib.baomitu.com/KaTeX/0.16.9/katex.min.css', media: 'print', onload: 'this.media="all"' },
 				// "InterVariable", "Inter", "InterDisplay"
 				{ rel: 'stylesheet', href: 'https://rsms.me/inter/inter.css', media: 'print', onload: 'this.media="all"' },
@@ -132,7 +133,7 @@ export default defineNuxtConfig({
 		},
 		optimizeDeps: {
 			// @keep-sorted
-			include: ['@shikijs/colorized-brackets', '@shikijs/transformers', '@unhead/schema-org/vue', '@vue/devtools-core', '@vue/devtools-kit', 'embla-carousel-autoplay', 'embla-carousel-vue', 'embla-carousel-wheel-gestures', 'es-toolkit/array', 'es-toolkit/math', 'es-toolkit/object', 'es-toolkit/promise', 'es-toolkit/string', 'minisearch', 'parse-domain', 'plain-shiki', 'shiki/themes/catppuccin-latte.mjs', 'shiki/themes/one-dark-pro.mjs', 'temporal-polyfill', 'vue-tippy'],
+			include: ['@shikijs/colorized-brackets', '@shikijs/transformers', '@unhead/schema-org/vue', '@vue/devtools-core', '@vue/devtools-kit', 'embla-carousel-autoplay', 'embla-carousel-vue', 'embla-carousel-wheel-gestures', 'es-toolkit/array', 'es-toolkit/math', 'es-toolkit/object', 'es-toolkit/promise', 'es-toolkit/string', 'minisearch', 'parse-domain', 'plain-shiki', 'shiki/themes/catppuccin-latte.mjs', 'temporal-polyfill', 'vue-tippy'],
 		},
 		server: {
 			allowedHosts: true,
@@ -149,19 +150,12 @@ export default defineNuxtConfig({
 		'@nuxt/hints',
 		'@nuxt/icon',
 		'@nuxt/image',
-		'@nuxtjs/color-mode',
 		'@nuxtjs/seo',
 		'@pinia/nuxt',
 		'@vueuse/nuxt',
 		'nuxt-llms',
 		'unplugin-yaml/nuxt',
 	],
-
-	colorMode: {
-		preference: 'system',
-		fallback: 'light',
-		classSuffix: '',
-	},
 
 	content: {
 		build: {
