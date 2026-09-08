@@ -1,0 +1,14 @@
+# Cloudflare Pages 重定向配置
+# https://developers.cloudflare.com/pages/configuration/redirects/
+#
+# 为什么不用项目根目录的 redirects.json：
+# 那份配置经 nuxt.config.ts 转成 nitro routeRules，但本站以静态方式部署到
+# Pages，构建产物中并不会生成 _redirects，routeRules 的重定向不会生效。
+# 此处沿用 public/_headers 的做法，由 Pages 原生读取。
+#
+# 语法：<来源> <目标> <状态码>，每行一条，从上往下匹配。
+
+# 2026-05-06（87ce1f6）统一文章命名规则时，以下文章的 URL 发生变化。
+# 旧地址已被搜索引擎收录，需永久重定向，避免 Search Console 报「未找到 (404)」。
+/2026/hello-world          /2026/10001-hello-world          301
+/2026/ide_init_config_win  /2026/10002-ide_init_config_win  301
