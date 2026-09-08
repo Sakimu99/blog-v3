@@ -25,7 +25,9 @@ const [pm, pmVersion] = packageManager.split('@') as [string, string]
 
 const service = computed(() => ([
 	...ci ? [{ label: '构建平台', value: ciPlatform }] : [],
-	{ label: '图片存储', value: () => [h(Icon, { name: 'devicon:cloudflare' }), ' R2'] },
+	// 本站图片存放于仓库 public/assets 随站部署，由 @nuxt/image 经 /_ipx 派生，
+	// 并未接入 R2（该账号也未启用 R2），故不沿用上游主题的取值。
+	{ label: '图片存储', value: () => [h(Icon, { name: 'devicon:cloudflare' }), ' Pages'] },
 	{ label: '软件协议', value: 'MIT' },
 	{ label: '文章许可', value: appConfig.copyright.abbr },
 	{ label: '规范域名', value: getDomain(appConfig.url) },
