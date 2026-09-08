@@ -17,10 +17,6 @@
     "build": "nuxt build",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "worker:check": "wrangler deploy --dry-run",
-    "worker:deploy": "wrangler deploy",
-    "worker:dev": "wrangler dev",
-    "worker:types": "wrangler types ./worker/worker-configuration.d.ts",
     "bump": "pnpx taze -w && rimraf pnpm-lock.yaml && pnpm update && pnpm dedupe",
     "lint": "eslint && stylelint '**/*.{vue,scss}'",
     "lint:fix": "eslint --fix && stylelint '**/*.{vue,scss}' --fix",
@@ -92,7 +88,6 @@
     "tsx": "catalog:framework",
     "typescript": "catalog:framework",
     "unplugin-yaml": "catalog:framework",
-    "vitest": "catalog:quality",
-    "wrangler": "catalog:"
+    "vitest": "catalog:quality"
   }
 }

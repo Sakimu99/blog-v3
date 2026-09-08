@@ -87,5 +87,3 @@ patchedDependencies:
   playwright-core: patches/playwright-core.patch
 
 shamefullyHoist: true
-catalog:
-  wrangler: ^4.118.0

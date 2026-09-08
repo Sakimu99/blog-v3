@@ -32,12 +32,4 @@ content/posts/test.md
 .playwright-mcp/
 giscus-local-comment.png
 
-# Bot SEO 依赖服务端运行时；当前 SSG 部署下仅作为本地实验保留。
-/server/middleware/bot-seo.ts
-/server/utils/bot.ts
-
-# Wrangler generated diagnostics and bindings
-.wrangler/
-worker-startup.cpuprofile
-worker/worker-configuration.d.ts
 
