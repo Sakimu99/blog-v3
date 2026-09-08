@@ -101,7 +101,8 @@ button, input, textarea {
 	transform: scaleX(-1);
 }
 
-.light .iconify[class*="i-catppuccin:"] {
+/* 站点固定亮色，不再依赖 .light 类名 */
+.iconify[class*="i-catppuccin:"] {
 	filter: invert(0.7) hue-rotate(180deg) saturate(4);
 }
 

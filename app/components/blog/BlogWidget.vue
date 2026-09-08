@@ -52,14 +52,17 @@ defineProps<{
 		}
 	}
 
+	// 原为 opacity: 0.3。祖先透明度必然作用于子孙，会把联系方式等有意义的内容
+	// 压到 1.49:1，且 #666 只有在完全不透明时才达标，靠调高数值救不回来。
+	// 改用去饱和：静置时同样呈「沉静」观感，但灰色文字本无饱和度，对比不受影响。
 	&.dim {
-		opacity: 0.3;
-		transition: opacity 0.2s;
+		transition: filter 0.2s;
+		filter: saturate(0.5);
 
 		#blog-aside:hover &,
 		&:focus-within,
 		#blog-aside.show & {
-			opacity: 1;
+			filter: none;
 		}
 	}
 }

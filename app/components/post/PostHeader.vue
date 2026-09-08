@@ -98,12 +98,18 @@ const { copy, copied } = useCopy(shareText)
 		color: white;
 		transition: font-size 0.2s;
 
+		// 封面多为浅色插画（亮度可达 0.9），白字需 50% 以上的黑遮罩才有 4.5:1 对比。
+		// 渐层需在文字起始位置前就达到该深度，故第二个色标压到 20%~25%。
+		.post-nav {
+			background-image: linear-gradient(#000A, #0005 70%, transparent);
+		}
+
 		.post-info {
 			filter: drop-shadow(0 1px 2px #000);
 		}
 
 		.post-title {
-			background-image: linear-gradient(transparent, #0003, #0005);
+			background-image: linear-gradient(transparent, #0009 25%, #000C);
 			text-shadow: var(--text-shadow-black);
 
 			&.text-story {
@@ -152,8 +158,11 @@ const { copy, copied } = useCopy(shareText)
 }
 
 .post-nav {
+	// 封面为绝对定位，此处需建立定位上下文才不会被盖住
+	position: relative;
 	padding: 0.8em 1rem;
 	font-size: 0.8em;
+	z-index: 1;
 
 	@media (max-width: $breakpoint-mobile) {
 		padding: 0.7em 0.85rem;

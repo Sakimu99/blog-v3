@@ -1,20 +1,41 @@
 /* 站点固定使用亮色配色，所有页面共享这一组设计变量。 */
-:root,
-.light {
+
+/*
+ * 明度阶梯说明：
+ * 表面层级依次为 场景底(scene) < 主壳(shell) < 卡片(card) < 纯白(bg)。
+ * 各层至少保留 4~5% 的明度差，否则毛玻璃在浅色壁纸上会糊成一片、失去层次。
+ * 半透明层的不透明度按「壁纸最暗处仍满足 4.5:1」反推得出，不可随意调低。
+ */
+:root {
 	--hue-theme: 220deg;
+
+	/* 文本 */
 	--c-text: hsl(var(--hue-theme) 0% 0%);
 	--c-text-1: hsl(var(--hue-theme) 0% 20%);
 	--c-text-2: hsl(var(--hue-theme) 0% 40%);
-	--c-text-3: hsl(var(--hue-theme) 0% 70%);
+
+	/* 三级文字需可读，不能低于 3:1，故由 70% 收紧至 55% */
+	--c-text-3: hsl(var(--hue-theme) 0% 55%);
+
+	/* 不透明表面阶梯 */
 	--c-bg: hsl(var(--hue-theme) 0% 100%);
-	--c-bg-1: hsl(var(--hue-theme) 20% 98%);
-	--c-bg-2: hsl(var(--hue-theme) 10% 95%);
-	--c-bg-3: hsl(var(--hue-theme) 10% 92%);
+	--c-bg-1: hsl(var(--hue-theme) 20% 97%);
+	--c-bg-2: hsl(var(--hue-theme) 14% 93%);
+	--c-bg-3: hsl(var(--hue-theme) 12% 88%);
 	--c-bg-soft: hsl(var(--hue-theme) 20% 20% / 10%);
-	--c-border: hsl(var(--hue-theme) 10% 91%);
-	--c-bg-a50: hsl(var(--hue-theme) 20% 98% / 50%);
-	--c-bg-a80: hsl(var(--hue-theme) 20% 98% / 80%);
-	--c-primary: hsl(var(--hue-theme) 100% 55%);
+
+	/* 边框需真正可见，91% 在 97% 的表面上等于没有 */
+	--c-border: hsl(var(--hue-theme) 12% 84%);
+	--c-bg-a50: hsl(var(--hue-theme) 20% 97% / 50%);
+	--c-bg-a80: hsl(var(--hue-theme) 20% 97% / 80%);
+
+	/*
+	 * 主色与强调色。
+	 * 主色在全站 26 处被当作文字色使用，原值 hsl(220 100% 55%) 仅在纯白底达标，
+	 * 一旦落在 primary-soft 或卡片底上就降到 3.99:1。此处统一压深，
+	 * 使其同时满足「作为文字」与「作为底色承载白字」两种用法。
+	 */
+	--c-primary: hsl(var(--hue-theme) 82% 46%);
 	--c-primary-soft: hsl(var(--hue-theme) 100% 60% / 15%);
 	--c-accent: hsl(180deg 70% 60%);
 	--ld-bg-blur: var(--c-bg-1);
@@ -27,16 +48,31 @@
 	--c-warning-soft: #F932;
 	--c-error: #D55;
 	--c-error-soft: #F332;
+
+	/*
+	 * 场景层：壁纸此前被三层白纱盖到完全不可见，却仍占用 LCP 预算。
+	 * 遮罩由 28%/18% 减薄至 22%/16%，让壁纸在面板间隙与页面边缘真正露出来；
+	 * 不再减薄是因为该图最暗处为 RGB(14,13,18)，接近纯黑，需保留基础压制。
+	 */
 	--site-bg-image: url("/assets/Yuki.webp");
-	--c-scene-base: hsl(var(--hue-theme) 25% 95%);
-	--c-scene-mask: hsl(var(--hue-theme) 40% 97% / 28%);
-	--c-scene-mist: hsl(var(--hue-theme) 30% 96% / 18%);
-	--c-reading-shell: hsl(var(--hue-theme) 24% 98% / 54%);
-	--c-reading-shell-border: hsl(var(--hue-theme) 18% 80% / 36%);
-	--c-reading-shadow: hsl(var(--hue-theme) 20% 60% / 8%);
-	--c-reading-card: hsl(var(--hue-theme) 18% 99% / 70%);
-	--c-reading-card-border: hsl(var(--hue-theme) 18% 82% / 40%);
-	--c-reading-soft: hsl(var(--hue-theme) 16% 98% / 34%);
+	--c-scene-base: hsl(var(--hue-theme) 22% 90%);
+	--c-scene-mask: hsl(var(--hue-theme) 40% 97% / 22%);
+	--c-scene-mist: hsl(var(--hue-theme) 30% 96% / 16%);
+
+	/*
+	 * 阅读层：设计原则是「壁纸在无文字处可见，承载文字的面板足够不透明」。
+	 * 不透明度按壁纸最暗块（过遮罩后 RGB(93,93,98)）反推，使次要文字 #666
+	 * 在任意壁纸位置都不低于 4.5:1——原值 shell 54% / card 70% 均不达标。
+	 */
+	--c-reading-shell: hsl(var(--hue-theme) 24% 98% / 90%);
+
+	/* 移动端内容区铺满全屏、无卡片托底，需再高一档 */
+	--c-reading-shell-solid: hsl(var(--hue-theme) 24% 98% / 96%);
+	--c-reading-shell-border: hsl(var(--hue-theme) 18% 72% / 55%);
+	--c-reading-shadow: hsl(var(--hue-theme) 25% 40% / 14%);
+	--c-reading-card: hsl(var(--hue-theme) 18% 99% / 92%);
+	--c-reading-card-border: hsl(var(--hue-theme) 18% 74% / 58%);
+	--c-reading-soft: hsl(var(--hue-theme) 16% 98% / 88%);
 
 	color-scheme: only light;
 }

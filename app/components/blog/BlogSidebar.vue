@@ -110,17 +110,23 @@ const searchPreviewText = computed(() => debouncedSelection.value || searchStore
 	border-radius: 0.5em;
 	transition: all 0.2s;
 
-	&:hover,
-	&.router-link-active {
+	&:hover {
 		background-color: var(--c-bg-soft);
 		color: var(--c-text);
+	}
+
+	// 当前页需要用主色明确标识，此前仅是一个灰点，与 hover 态难以区分
+	&.router-link-active {
+		background-color: var(--c-primary-soft);
+		font-weight: 500;
+		color: var(--c-primary);
 	}
 
 	&.router-link-active::after {
 		content: "⦁";
 		width: 1em;
 		text-align: center;
-		color: var(--c-text-3);
+		color: currentcolor;
 	}
 
 	> .iconify {
@@ -149,18 +155,21 @@ const searchPreviewText = computed(() => debouncedSelection.value || searchStore
 .search-btn {
 	box-sizing: border-box;
 	width: 100%;
-	opacity: 0.5;
 	min-width: 0;
 	margin: 1rem 0;
 	outline: 2px solid var(--c-border);
 	outline-offset: -2px;
+
+	// 原为 opacity: 0.5，占位文字仅 1.93:1；即便去掉透明度、直接落在侧栏半透明
+	// 表面上也只有 4.47:1。改为实心底，使其达到 5.46:1，同时更像一个输入框。
+	background-color: var(--c-bg);
+	color: var(--c-text-2);
 	cursor: text;
 	user-select: none;
 
 	&:hover {
-		opacity: 1;
-		outline-color: transparent;
-		background-color: transparent;
+		outline-color: var(--c-primary);
+		color: var(--c-text-1);
 	}
 }
 

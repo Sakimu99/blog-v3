@@ -1,4 +1,6 @@
 // 一部分具有卡片样式的组件复用了此类
+// 此类在列表页会实例化十余次，每个 backdrop-filter 都是一个独立合成层，
+// 滚动时整体重绘。背景已达 92% 不透明，模糊几乎不可见，故不再使用。
 .card {
 	contain: paint;
 	display: block;
@@ -6,7 +8,6 @@
 	border-radius: 0.5em;
 	box-shadow: var(--box-shadow-1);
 	background-color: var(--c-reading-card);
-	backdrop-filter: blur(14px) saturate(1.12);
 	transition: all 0.2s;
 
 	&.upraise:hover {

@@ -158,12 +158,14 @@
 		width: 100%;
 	}
 
+	// 保持通栏无圆角，但必须给内容一个实际表面：
+	// 此前为 transparent，正文与分类行直接压在模糊壁纸上，次要文字仅 1.86:1。
 	#content > #main-content {
 		padding: 0;
 		border: none;
 		border-radius: 0;
 		box-shadow: none;
-		background-color: transparent;
+		background-color: var(--c-reading-shell-solid);
 		backdrop-filter: none;
 	}
 }

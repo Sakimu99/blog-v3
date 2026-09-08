@@ -118,8 +118,10 @@ useEventListener(carouselEl, 'wheel', (e) => {
 	gap: 2rem;
 	height: 3rem;
 	margin-bottom: -0.2rem;
-	mask-image: linear-gradient(#FFF, transparent);
-	color: var(--c-text-3);
+
+	// 保留自上而下的淡出装饰，但不再让字形下半截完全透明
+	mask-image: linear-gradient(#FFF 55%, #FFFB);
+	color: var(--c-text-2);
 
 	>.title {
 		font-size: 3rem;
