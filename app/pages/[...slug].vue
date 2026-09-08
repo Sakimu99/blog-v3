@@ -39,6 +39,28 @@ else if (post.value) {
 		ogImage: post.value.image,
 		description: post.value.description,
 	})
+
+	// 文章页此前仅有 @nuxtjs/seo 默认的 WebSite/WebPage，缺少 Article，
+	// 搜索引擎无法识别发布时间、作者与正文实体，拿不到富摘要。
+	const appConfig = useAppConfig()
+	// 结构化数据要求绝对 URL，而 frontmatter 的 image 两种写法都有
+	// （assets/... 与 /assets/...），schema-org 不会代为补全，需在此归一化。
+	const articleImage = post.value.image
+		? new URL(post.value.image, appConfig.url).href
+		: undefined
+	useSchemaOrg([
+		defineArticle({
+			headline: post.value.title,
+			description: post.value.description,
+			image: articleImage,
+			datePublished: post.value.date,
+			dateModified: post.value.updated || post.value.date,
+			author: { name: post.value.author || appConfig.author.name, url: appConfig.author.homepage },
+			keywords: post.value.tags,
+			articleSection: post.value.categories,
+		}),
+	])
+
 	layoutStore.setAside(post.value.meta?.aside as WidgetName[] | undefined)
 }
 else {

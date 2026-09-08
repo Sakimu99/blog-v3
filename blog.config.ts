@@ -4,7 +4,8 @@ const basicConfig = {
 	title: 'Sakimu',
 	subtitle: '总有一天会到达那个地方',
 	// 长 description 利好于 SEO
-	description: '',
+	// 此前为空字符串，导致首页完全没有 meta description——首页是全站权重最高的页面。
+	description: 'Sakimu 的个人博客，记录博客搭建与优化、macOS 终端美化、开发环境配置、树莓派家庭运维、微信机器人接入等折腾过程与技术笔记，也写一些日常随笔。',
 	author: {
 		name: 'Sakimu',
 		avatar: 'https://q.qlogo.cn/headimg_dl?dst_uin=2811363539&spec=5',

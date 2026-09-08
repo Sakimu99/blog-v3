@@ -48,6 +48,12 @@ function getArticleYear(article: ArticleProps) {
 </script>
 
 <template>
+<!-- 此前本页无任何 h1，年份仅为 h2，缺少页面级标题。写法与 /link、首页一致。 -->
+<!-- 注：BlogHeader 仅接受 tag 一个 prop，link.vue / tools.vue 上的 suffix 实为无效属性，此处不沿用。 -->
+<div class="mobile-only">
+	<BlogHeader to="/" tag="h1" />
+</div>
+
 <div class="archive proper-height">
 	<PostOrderToggle
 		v-model:is-ascending="isAscending"
