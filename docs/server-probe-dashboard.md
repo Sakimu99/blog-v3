@@ -11,6 +11,15 @@
 - probe-agent/：仅使用 Python 标准库的 Linux 采集端和 systemd 定时器。
 - wrangler.jsonc：Worker 路由、D1 绑定和每分钟 Cron。
 
+## 当前部署状态
+
+- 页面已发布到 Cloudflare Pages 项目 `blog-v3`：<https://blog.sakimu.com/servers>。
+- `blog-bot-html` Worker 已绑定 `blog.sakimu.com/*`，为页面提供探针 API，并代理普通站点请求到 Pages 源站。
+- D1 数据库 `blog-server-probes` 已创建并应用 `0001_server_probes.sql`；数据库 ID 保存在 `wrangler.jsonc`。
+- 三台服务器均已安装并启用 `server-probe.timer`，每分钟采集一次；首次心跳和 SSH TCP 探测均已收到。
+- Worker 每分钟执行 SSH TCP 探测，每天 UTC 02:17 清理 30 天前的数据。
+- 生产令牌保存在 Cloudflare Worker Secrets 与本机被 Git 忽略的 `.worker.secrets.json` 中；服务器端令牌位于权限为 `0600` 的 `/etc/server-probe.env`。
+
 ## 节点 ID
 
 | 页面别名 | ID |
@@ -21,15 +30,15 @@
 
 ID 是配置键。采集脚本的 PROBE_SERVER_ID、Worker 令牌映射和目标映射必须一致。
 
-## 接入步骤
+## 新环境接入步骤
 
-部署 Worker 会接管 blog.sakimu.com/* 路由，并将普通网页请求代理到 PAGES_ORIGIN。以下步骤会创建 Cloudflare 数据库并部署生产 Worker；目前尚未执行这些外部操作。
+以下步骤用于迁移到新的 Cloudflare 账号或重建环境。部署 Worker 会接管 `blog.sakimu.com/*` 路由，并将普通网页请求代理到 `PAGES_ORIGIN`。当前生产环境已完成这些步骤，不要在同一账号重复创建数据库。
 
-1. 在 Cloudflare 创建 D1：
+1. 在新 Cloudflare 账号创建 D1：
 
     pnpm exec wrangler d1 create blog-server-probes
 
-   把命令返回的真实数据库 ID 填入 wrangler.jsonc 的 d1_databases[0].database_id，替换本地占位值。之后应用迁移：
+   把命令返回的数据库 ID 填入 wrangler.jsonc 的 d1_databases[0].database_id。之后应用迁移：
 
     pnpm exec wrangler d1 migrations apply blog-server-probes --remote
 
