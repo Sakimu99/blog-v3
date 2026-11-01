@@ -384,7 +384,9 @@ function onDetailsToggle(event: Event) {
 							<span class="resource-detail">{{ formatBytes(server.metrics?.diskUsedBytes) }} / {{ formatBytes(server.metrics?.diskTotalBytes) }}</span>
 						</div>
 					</div>
-					<p v-if="!server.metrics" class="metric-pending">资源采集器待接入</p>
+					<p v-if="!server.metrics" class="metric-pending">
+						资源采集器待接入
+					</p>
 
 					<details class="node-details" @toggle="onDetailsToggle">
 						<summary>
