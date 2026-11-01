@@ -19,8 +19,12 @@ useSeoMeta({
 const dashboard = shallowRef<ProbeDashboardResponse | null>(null)
 const requestState = ref<'loading' | 'ready' | 'error'>('loading')
 const refreshing = ref(false)
+const historyLoaded = ref(false)
+const historyLoading = ref(false)
 let refreshTimer: number | undefined
 let historyRefreshCount = 0
+let historyRefreshQueued = false
+const historyRefreshMinutes = 30
 
 const servers = computed<ProbeServerSnapshot[]>(() => probeServers.map((server) => {
 	const snapshot = dashboard.value?.servers.find(item => item.id === server.id)
@@ -38,6 +42,7 @@ const servers = computed<ProbeServerSnapshot[]>(() => probeServers.map((server) 
 const onlineCount = computed(() => servers.value.filter(server => server.online === true).length)
 const offlineCount = computed(() => servers.value.filter(server => server.online === false).length)
 const unknownCount = computed(() => servers.value.filter(server => server.online === null).length)
+const metricsPendingCount = computed(() => servers.value.filter(server => server.metrics === null).length)
 
 const overallLabel = computed(() => {
 	if (requestState.value === 'error')
@@ -46,14 +51,21 @@ const overallLabel = computed(() => {
 		return '有节点未响应'
 	if (unknownCount.value > 0)
 		return '部分节点待接入'
+	if (metricsPendingCount.value > 0)
+		return '部分采集器待接入'
 	return '运行正常'
 })
 
 async function refreshDashboard(includeHistory = false) {
-	if (refreshing.value)
+	if (refreshing.value) {
+		if (includeHistory && !historyLoading.value)
+			historyRefreshQueued = true
 		return
+	}
 
 	refreshing.value = true
+	if (includeHistory)
+		historyLoading.value = true
 	try {
 		const endpoint = includeHistory ? '/api/probes' : '/api/probes?history=0'
 		const response = await fetch(endpoint, { cache: 'no-store' })
@@ -63,6 +75,8 @@ async function refreshDashboard(includeHistory = false) {
 		const latest = await response.json() as ProbeDashboardResponse
 		if (includeHistory || !dashboard.value) {
 			dashboard.value = latest
+			if (includeHistory)
+				historyLoaded.value = true
 		}
 		else {
 			const historyByServer = new Map(dashboard.value.servers.map(server => [server.id, server.history]))
@@ -81,14 +95,19 @@ async function refreshDashboard(includeHistory = false) {
 	}
 	finally {
 		refreshing.value = false
+		historyLoading.value = false
+		if (historyRefreshQueued) {
+			historyRefreshQueued = false
+			void refreshDashboard(true)
+		}
 	}
 }
 
 onMounted(() => {
-	void refreshDashboard(true)
+	void refreshDashboard()
 	refreshTimer = window.setInterval(() => {
 		historyRefreshCount++
-		void refreshDashboard(historyRefreshCount % 5 === 0)
+		void refreshDashboard(historyLoaded.value && historyRefreshCount % historyRefreshMinutes === 0)
 	}, 60_000)
 })
 
@@ -199,8 +218,28 @@ function trendTimeRange(metrics: ProbeMetricTrend[]): string {
 	return formatTime(metrics[0]?.at) + ' — ' + formatTime(metrics.at(-1)?.at)
 }
 
+function trendEmptyLabel(count: number): string {
+	if (historyLoading.value)
+		return '正在读取趋势'
+	if (!historyLoaded.value)
+		return '展开时读取趋势'
+	return count === 0 ? '尚无历史采样' : '正在积累趋势'
+}
+
+function networkHistoryEmptyLabel(): string {
+	if (historyLoading.value)
+		return '正在读取连通记录'
+	return historyLoaded.value ? '尚无足够的连通记录' : '展开时读取历史记录'
+}
+
 async function refreshNow() {
 	await refreshDashboard(true)
+}
+
+function onDetailsToggle(event: Event) {
+	const details = event.currentTarget as HTMLDetailsElement
+	if (details.open && !historyLoaded.value)
+		void refreshDashboard(true)
 }
 </script>
 
@@ -284,7 +323,11 @@ async function refreshNow() {
 					<span class="section-kicker">YOUR CLOUD, AT A GLANCE</span>
 					<h2 id="node-list-title">节点一览</h2>
 				</div>
-				<span class="auto-refresh"><span /> 状态每分钟 · 趋势每 5 分钟</span>
+				<span class="auto-refresh">
+					<span class="auto-refresh-dot" />
+					<span>状态每分钟 · 趋势按需 / 每 30 分钟更新</span>
+					<span v-if="metricsPendingCount">· {{ metricsPendingCount }} 台待接采集器</span>
+				</span>
 			</div>
 
 			<div class="node-grid">
@@ -341,67 +384,74 @@ async function refreshNow() {
 							<span class="resource-detail">{{ formatBytes(server.metrics?.diskUsedBytes) }} / {{ formatBytes(server.metrics?.diskTotalBytes) }}</span>
 						</div>
 					</div>
+					<p v-if="!server.metrics" class="metric-pending">资源采集器待接入</p>
 
-					<div class="trend-block">
-						<div class="trend-heading">
+					<details class="node-details" @toggle="onDetailsToggle">
+						<summary>
+							<span>资源趋势与运行详情</span>
+							<span class="node-details-hint">24 小时 <Icon name="tabler:chevron-down" aria-hidden="true" /></span>
+						</summary>
+						<div class="trend-block">
+							<div class="trend-heading">
+								<div>
+									<h4>资源趋势</h4>
+									<span>最近 24 小时</span>
+								</div>
+								<div class="trend-legend">
+									<span><i class="cpu" />CPU</span>
+									<span><i class="memory" />内存</span>
+									<span><i class="disk" />磁盘</span>
+								</div>
+							</div>
+							<div class="trend-chart">
+								<svg viewBox="0 0 600 100" preserveAspectRatio="none" role="img" :aria-label="server.name + ' CPU、内存和磁盘历史趋势'">
+									<line x1="0" y1="25" x2="600" y2="25" />
+									<line x1="0" y1="50" x2="600" y2="50" />
+									<line x1="0" y1="75" x2="600" y2="75" />
+									<path class="cpu-line" :d="metricPath(server.history.metrics, 'cpuPercent')" />
+									<path class="memory-line" :d="metricPath(server.history.metrics, 'memoryPercent')" />
+									<path class="disk-line" :d="metricPath(server.history.metrics, 'diskPercent')" />
+								</svg>
+								<div v-if="server.history.metrics.length < 2" class="chart-empty">
+									<span>{{ trendEmptyLabel(server.history.metrics.length) }}</span>
+								</div>
+							</div>
+							<div class="trend-range">
+								<span>24 小时前</span>
+								<span>{{ trendTimeRange(server.history.metrics) }}</span>
+								<span>现在</span>
+							</div>
+						</div>
+
+						<div class="node-footer">
 							<div>
-								<h4>资源趋势</h4>
-								<span>最近 24 小时</span>
+								<span class="metric-label">系统运行时间</span>
+								<strong>{{ formatDuration(server.metrics?.uptimeSeconds) }}</strong>
 							</div>
-							<div class="trend-legend">
-								<span><i class="cpu" />CPU</span>
-								<span><i class="memory" />内存</span>
-								<span><i class="disk" />磁盘</span>
+							<div>
+								<span class="metric-label">1 分钟负载</span>
+								<strong>{{ server.metrics ? server.metrics.load1.toFixed(2) : '—' }}</strong>
 							</div>
-						</div>
-						<div class="trend-chart">
-							<svg viewBox="0 0 600 100" preserveAspectRatio="none" role="img" :aria-label="server.name + ' CPU、内存和磁盘历史趋势'">
-								<line x1="0" y1="25" x2="600" y2="25" />
-								<line x1="0" y1="50" x2="600" y2="50" />
-								<line x1="0" y1="75" x2="600" y2="75" />
-								<path class="cpu-line" :d="metricPath(server.history.metrics, 'cpuPercent')" />
-								<path class="memory-line" :d="metricPath(server.history.metrics, 'memoryPercent')" />
-								<path class="disk-line" :d="metricPath(server.history.metrics, 'diskPercent')" />
-							</svg>
-							<div v-if="server.history.metrics.length < 2" class="chart-empty">
-								<span>{{ server.history.metrics.length === 0 ? '尚无历史采样' : '正在积累趋势' }}</span>
+							<div>
+								<span class="metric-label">最近心跳</span>
+								<strong>{{ formatTime(server.lastHeartbeat) }}</strong>
 							</div>
 						</div>
-						<div class="trend-range">
-							<span>24 小时前</span>
-							<span>{{ trendTimeRange(server.history.metrics) }}</span>
-							<span>现在</span>
-						</div>
-					</div>
 
-					<div class="node-footer">
-						<div>
-							<span class="metric-label">系统运行时间</span>
-							<strong>{{ formatDuration(server.metrics?.uptimeSeconds) }}</strong>
+						<div class="network-history">
+							<div class="network-history__heading">
+								<span>SSH 连通历史</span>
+								<strong>{{ server.history.network.length }} <small>次</small></strong>
+							</div>
+							<div class="network-chart">
+								<svg viewBox="0 0 600 54" preserveAspectRatio="none" role="img" :aria-label="server.name + ' SSH 延迟历史趋势'">
+									<line x1="0" y1="50" x2="600" y2="50" />
+									<path class="latency-line" :d="latencyPath(server.history.network)" />
+								</svg>
+								<span v-if="server.history.network.length < 2">{{ networkHistoryEmptyLabel() }}</span>
+							</div>
 						</div>
-						<div>
-							<span class="metric-label">1 分钟负载</span>
-							<strong>{{ server.metrics ? server.metrics.load1.toFixed(2) : '—' }}</strong>
-						</div>
-						<div>
-							<span class="metric-label">最近心跳</span>
-							<strong>{{ formatTime(server.lastHeartbeat) }}</strong>
-						</div>
-					</div>
-
-					<div class="network-history">
-						<div class="network-history__heading">
-							<span>SSH 连通历史</span>
-							<strong>{{ server.history.network.length }} <small>次</small></strong>
-						</div>
-						<div class="network-chart">
-							<svg viewBox="0 0 600 54" preserveAspectRatio="none" role="img" :aria-label="server.name + ' SSH 延迟历史趋势'">
-								<line x1="0" y1="50" x2="600" y2="50" />
-								<path class="latency-line" :d="latencyPath(server.history.network)" />
-							</svg>
-							<span v-if="server.history.network.length < 2">尚无足够的连通记录</span>
-						</div>
-					</div>
+					</details>
 				</article>
 			</div>
 		</section>
@@ -432,8 +482,8 @@ async function refreshNow() {
 	gap: 1rem;
 	position: relative;
 	overflow: hidden;
-	min-height: 12rem;
-	padding: 1.5rem 1.75rem;
+	min-height: 10rem;
+	padding: 1.25rem 1.5rem;
 	background:
 		radial-gradient(ellipse at 84% 20%, hsl(205deg 90% 76% / 28%), transparent 35%),
 		radial-gradient(ellipse at 100% 100%, hsl(253deg 78% 76% / 18%), transparent 40%),
@@ -449,8 +499,8 @@ async function refreshNow() {
 	}
 
 	@media (max-width: $breakpoint-mobile) {
-		min-height: 10rem;
-		padding: 1.15rem 1rem 1rem;
+		min-height: 9rem;
+		padding: 1rem 0.9rem 0.85rem;
 	}
 }
 
@@ -487,7 +537,7 @@ async function refreshNow() {
 	display: grid;
 	place-items: center;
 	position: relative;
-	width: 8rem;
+	width: 6.25rem;
 	aspect-ratio: 1;
 	border: 1px solid hsl(218deg 55% 65% / 25%);
 	border-radius: 50%;
@@ -746,19 +796,25 @@ async function refreshNow() {
 .auto-refresh {
 	display: inline-flex;
 	align-items: center;
+	justify-content: flex-end;
+	flex-wrap: wrap;
 	gap: 0.42rem;
 	color: var(--c-text-3);
 	font-size: 0.68rem;
-	white-space: nowrap;
+	text-align: right;
 
-	> span {
+	.auto-refresh-dot {
+		flex: none;
 		width: 0.35rem;
+		aspect-ratio: 1;
+		border-radius: 50%;
+		background: #5CAF86;
 	}
 }
 
 .node-grid {
 	display: grid;
-	grid-template-columns: repeat(2, minmax(0, 1fr));
+	grid-template-columns: repeat(auto-fill, minmax(min(100%, 21rem), 1fr));
 	gap: 0.8rem;
 
 	@media (max-width: $breakpoint-mobile) {
@@ -768,9 +824,10 @@ async function refreshNow() {
 
 .node-card {
 	display: grid;
-	gap: 0.85rem;
+	align-content: start;
+	gap: 0.65rem;
 	min-width: 0;
-	padding: 1rem;
+	padding: 0.75rem;
 }
 
 .node-card__header, .node-identity, .node-status, .node-connection, .resource-topline, .trend-heading, .trend-legend, .node-footer, .network-history__heading {
@@ -798,7 +855,7 @@ async function refreshNow() {
 .node-mark {
 	display: grid;
 	place-items: center;
-	width: 2.2rem;
+	width: 1.9rem;
 	aspect-ratio: 1;
 	flex: none;
 	border: 1px solid hsl(218deg 45% 75% / 38%);
@@ -816,7 +873,7 @@ async function refreshNow() {
 	flex: none;
 	justify-content: flex-start;
 	gap: 0.38rem;
-	padding: 0.3rem 0.56rem;
+	padding: 0.25rem 0.48rem;
 	border-radius: 999px;
 	font-size: 0.68rem;
 	font-weight: 700;
@@ -845,7 +902,7 @@ async function refreshNow() {
 }
 
 .node-connection {
-	padding: 0.55rem 0.7rem;
+	padding: 0.45rem 0.58rem;
 	border: 1px solid hsl(220deg 22% 77% / 32%);
 	border-radius: 0.75rem;
 	background: hsl(220deg 30% 98% / 65%);
@@ -871,7 +928,8 @@ async function refreshNow() {
 
 .resource-grid {
 	display: grid;
-	gap: 0.7rem;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 0.55rem;
 }
 
 .resource-cell {
@@ -930,15 +988,64 @@ async function refreshNow() {
 
 .resource-detail {
 	color: var(--c-text-3);
-	font-size: 0.62rem;
+	font-size: 0.56rem;
 	font-variant-numeric: tabular-nums;
+}
+
+.metric-pending {
+	margin: -0.25rem 0 0;
+	color: var(--c-text-3);
+	font-size: 0.62rem;
+}
+
+.node-details {
+	min-width: 0;
+	border-top: 1px solid hsl(220deg 22% 77% / 30%);
+
+	> summary {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.5rem;
+		padding-top: 0.55rem;
+		color: var(--c-text-2);
+		font-size: 0.68rem;
+		font-weight: 650;
+		cursor: pointer;
+		list-style: none;
+		user-select: none;
+
+		&::-webkit-details-marker {
+			display: none;
+		}
+	}
+
+	&[open] > summary {
+		padding-bottom: 0.1rem;
+	}
+}
+
+.node-details-hint {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.28rem;
+	color: var(--c-text-3);
+	font-size: 0.6rem;
+	font-weight: 500;
+
+	:deep(svg) {
+		transition: transform 0.18s ease;
+	}
+
+	.node-details[open] & :deep(svg) {
+		transform: rotate(180deg);
+	}
 }
 
 .trend-block {
 	display: grid;
 	gap: 0.35rem;
-	padding-top: 0.72rem;
-	border-top: 1px solid hsl(220deg 22% 77% / 30%);
+	padding-top: 0.55rem;
 }
 
 .trend-heading {
@@ -1038,7 +1145,7 @@ async function refreshNow() {
 .node-footer {
 	align-items: stretch;
 	gap: 0.5rem;
-	padding-top: 0.65rem;
+	padding-top: 0.5rem;
 	border-top: 1px solid hsl(220deg 22% 77% / 30%);
 
 	> div {
@@ -1054,7 +1161,7 @@ async function refreshNow() {
 .network-history {
 	display: grid;
 	gap: 0.3rem;
-	padding-top: 0.6rem;
+	padding-top: 0.5rem;
 	border-top: 1px solid hsl(220deg 22% 77% / 30%);
 }
 

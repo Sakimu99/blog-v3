@@ -1,6 +1,6 @@
 # 博客服务器探针面板
 
-本功能在博客的 /servers 页面公开展示三台服务器的别名、在线状态、SSH TCP 延迟、CPU、内存、磁盘和 24 小时趋势。Worker 私下持有目标地址与心跳令牌；公开 API 不返回这些配置。心跳数据保留 30 天。
+本功能在博客的 /servers 页面公开展示七台云服务器的别名、在线状态、SSH TCP 延迟、CPU、内存、磁盘和 24 小时趋势。Worker 私下持有目标地址与心跳令牌；公开 API 不返回这些配置。心跳数据保留 30 天。流量机不纳入监控。
 
 ## 组成
 
@@ -16,18 +16,23 @@
 - 页面已发布到 Cloudflare Pages 项目 `blog-v3`：<https://blog.sakimu.com/servers>。
 - `blog-bot-html` Worker 已绑定 `blog.sakimu.com/*`，为页面提供探针 API，并代理普通站点请求到 Pages 源站。
 - D1 数据库 `blog-server-probes` 已创建并应用 `0001_server_probes.sql`；数据库 ID 保存在 `wrangler.jsonc`。
-- 三台服务器均已安装并启用 `server-probe.timer`，每分钟采集一次；首次心跳和 SSH TCP 探测均已收到。
+- Oracle 新加坡与美国 A、B 三台服务器已安装并启用 `server-probe.timer`，每分钟采集一次。
+- 另外四台云服务器已加入公开别名清单及 Worker 的私有 SSH TCP 探测配置；由于本地没有对应 SSH 私钥，采集器部署待补充密钥后完成。
 - Worker 每分钟执行 SSH TCP 探测，每天 UTC 02:17 清理 30 天前的数据。
-- 面板状态每分钟刷新，24 小时趋势每 5 分钟重新读取，减少 D1 免费额度的行读取量。
+- 面板状态每分钟刷新；展开趋势时才读取 24 小时历史，之后每 30 分钟更新一次，降低公开访问的 D1 行读取量。
 - 生产令牌保存在 Cloudflare Worker Secrets 与本机被 Git 忽略的 `.worker.secrets.json` 中；服务器端令牌位于权限为 `0600` 的 `/etc/server-probe.env`。
 
 ## 节点 ID
 
-| 页面别名 | ID |
-| --- | --- |
-| 新加坡 A1 | oracle-sg-a1 |
-| 美国 A | us-a |
-| 美国 B | us-b |
+| 页面别名 | ID | 资源采集器 |
+| --- | --- | --- |
+| 新加坡 A1 | oracle-sg-a1 | 已部署 |
+| 美国 A | us-a | 已部署 |
+| 美国 B | us-b | 已部署 |
+| 国内阿里云 | aliyun-cn | 等待 SSH 私钥 |
+| 国内腾讯云 A | tencent-cn-a | 等待 SSH 私钥 |
+| 国内腾讯云 B | tencent-cn-b | 等待 SSH 私钥 |
+| 香港阿里云 | aliyun-hk | 等待 SSH 私钥 |
 
 ID 是配置键。采集脚本的 PROBE_SERVER_ID、Worker 令牌映射和目标映射必须一致。
 
@@ -48,8 +53,8 @@ ID 是配置键。采集脚本的 PROBE_SERVER_ID、Worker 令牌映射和目标
 3. 在仓库根目录建立被 Git 忽略的 .worker.secrets.json，填写自己的固定探测目标和令牌映射：
 
     {
-      "PROBE_TARGETS_JSON": "{\"oracle-sg-a1\":{\"hostname\":\"sg-host.example\",\"port\":22},\"us-a\":{\"hostname\":\"us-a.example\",\"port\":22},\"us-b\":{\"hostname\":\"us-b.example\",\"port\":22}}",
-      "PROBE_TOKENS_JSON": "{\"oracle-sg-a1\":\"新加坡节点随机令牌\",\"us-a\":\"美国A节点随机令牌\",\"us-b\":\"美国B节点随机令牌\"}"
+      "PROBE_TARGETS_JSON": "{\"oracle-sg-a1\":{\"hostname\":\"sg-host.example\",\"port\":22},\"us-a\":{\"hostname\":\"us-a.example\",\"port\":22},\"us-b\":{\"hostname\":\"us-b.example\",\"port\":22},\"aliyun-cn\":{\"hostname\":\"aliyun-cn.example\",\"port\":22},\"tencent-cn-a\":{\"hostname\":\"tencent-a.example\",\"port\":22},\"tencent-cn-b\":{\"hostname\":\"tencent-b.example\",\"port\":22},\"aliyun-hk\":{\"hostname\":\"aliyun-hk.example\",\"port\":22}}",
+      "PROBE_TOKENS_JSON": "{\"oracle-sg-a1\":\"新加坡节点随机令牌\",\"us-a\":\"美国A节点随机令牌\",\"us-b\":\"美国B节点随机令牌\",\"aliyun-cn\":\"国内阿里云随机令牌\",\"tencent-cn-a\":\"国内腾讯云A随机令牌\",\"tencent-cn-b\":\"国内腾讯云B随机令牌\",\"aliyun-hk\":\"香港阿里云随机令牌\"}"
     }
 
    将示例主机名替换成自己的 SSH 主机名。Worker 只读取管理员配置，不接受访客传入主机名或端口。密钥文件不要提交、粘贴到聊天或留在共享目录。
@@ -73,7 +78,7 @@ ID 是配置键。采集脚本的 PROBE_SERVER_ID、Worker 令牌映射和目标
     PROBE_TOKEN=当前节点的随机令牌
     PROBE_ENDPOINT=https://blog.sakimu.com/api/probes/heartbeat
 
-   美国 A 使用 us-a，美国 B 使用 us-b。环境文件必须归 root 所有且权限为 600，然后启用定时器：
+   各节点分别使用上表 ID（例如新加坡 A1 使用 `oracle-sg-a1`、香港阿里云使用 `aliyun-hk`）。环境文件必须归 root 所有且权限为 600，然后启用定时器：
 
     sudo chown root:root /etc/server-probe.env
     sudo chmod 600 /etc/server-probe.env

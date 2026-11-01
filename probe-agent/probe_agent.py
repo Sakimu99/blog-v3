@@ -10,7 +10,15 @@ import time
 import urllib.error
 import urllib.request
 
-ALLOWED_SERVER_IDS = {"oracle-sg-a1", "us-a", "us-b"}
+ALLOWED_SERVER_IDS = {
+    "oracle-sg-a1",
+    "us-a",
+    "us-b",
+    "aliyun-cn",
+    "tencent-cn-a",
+    "tencent-cn-b",
+    "aliyun-hk",
+}
 DEFAULT_ENDPOINT = "https://blog.sakimu.com/api/probes/heartbeat"
 
 
