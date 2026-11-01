@@ -795,9 +795,11 @@ function onDetailsToggle(event: Event) {
 
 .auto-refresh {
 	display: inline-flex;
+	flex: 1 1 auto;
 	align-items: center;
 	justify-content: flex-end;
 	flex-wrap: wrap;
+	min-width: 0;
 	gap: 0.42rem;
 	color: var(--c-text-3);
 	font-size: 0.68rem;
