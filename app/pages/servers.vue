@@ -20,6 +20,7 @@ const dashboard = shallowRef<ProbeDashboardResponse | null>(null)
 const requestState = ref<'loading' | 'ready' | 'error'>('loading')
 const refreshing = ref(false)
 let refreshTimer: number | undefined
+let historyRefreshCount = 0
 
 const servers = computed<ProbeServerSnapshot[]>(() => probeServers.map((server) => {
 	const snapshot = dashboard.value?.servers.find(item => item.id === server.id)
@@ -48,17 +49,31 @@ const overallLabel = computed(() => {
 	return '运行正常'
 })
 
-async function refreshDashboard() {
+async function refreshDashboard(includeHistory = false) {
 	if (refreshing.value)
 		return
 
 	refreshing.value = true
 	try {
-		const response = await fetch('/api/probes', { cache: 'no-store' })
+		const endpoint = includeHistory ? '/api/probes' : '/api/probes?history=0'
+		const response = await fetch(endpoint, { cache: 'no-store' })
 		if (!response.ok)
 			throw new Error('监控接口暂不可用')
 
-		dashboard.value = await response.json() as ProbeDashboardResponse
+		const latest = await response.json() as ProbeDashboardResponse
+		if (includeHistory || !dashboard.value) {
+			dashboard.value = latest
+		}
+		else {
+			const historyByServer = new Map(dashboard.value.servers.map(server => [server.id, server.history]))
+			dashboard.value = {
+				...latest,
+				servers: latest.servers.map(server => ({
+					...server,
+					history: historyByServer.get(server.id) ?? server.history,
+				})),
+			}
+		}
 		requestState.value = 'ready'
 	}
 	catch {
@@ -70,8 +85,11 @@ async function refreshDashboard() {
 }
 
 onMounted(() => {
-	void refreshDashboard()
-	refreshTimer = window.setInterval(() => void refreshDashboard(), 60_000)
+	void refreshDashboard(true)
+	refreshTimer = window.setInterval(() => {
+		historyRefreshCount++
+		void refreshDashboard(historyRefreshCount % 5 === 0)
+	}, 60_000)
 })
 
 onBeforeUnmount(() => {
@@ -182,7 +200,7 @@ function trendTimeRange(metrics: ProbeMetricTrend[]): string {
 }
 
 async function refreshNow() {
-	await refreshDashboard()
+	await refreshDashboard(true)
 }
 </script>
 
@@ -266,7 +284,7 @@ async function refreshNow() {
 					<span class="section-kicker">YOUR CLOUD, AT A GLANCE</span>
 					<h2 id="node-list-title">节点一览</h2>
 				</div>
-				<span class="auto-refresh"><span /> 自动刷新 · 60 秒</span>
+				<span class="auto-refresh"><span /> 状态每分钟 · 趋势每 5 分钟</span>
 			</div>
 
 			<div class="node-grid">

@@ -187,7 +187,8 @@ export async function handleProbeApi(request: Request, env: ProbeEnv): Promise<R
 			return secureJson({ error: 'method_not_allowed' }, 405, { Allow: 'GET, HEAD' })
 
 		try {
-			const dashboard = await readDashboard(env)
+			const includeHistory = new URL(request.url).searchParams.get('history') !== '0'
+			const dashboard = await readDashboard(env, includeHistory)
 			return request.method === 'HEAD'
 				? new Response(null, { headers: responseHeaders() })
 				: secureJson(dashboard)
@@ -280,21 +281,25 @@ function mapNetworkTrend(row: NetworkRow): ProbeNetworkTrend {
 	}
 }
 
-async function readDashboard(env: ProbeEnv): Promise<ProbeDashboardResponse> {
+async function readDashboard(env: ProbeEnv, includeHistory: boolean): Promise<ProbeDashboardResponse> {
 	const generatedAt = Date.now()
 	const since = generatedAt - historyWindowMs
 
 	const servers = await Promise.all(probeServers.map(async (server): Promise<ProbeServerSnapshot> => {
-		const [latestMetric, latestNetwork, metricHistory, networkHistory] = await Promise.all([
+		const [latestMetric, latestNetwork] = await Promise.all([
 			env.DB.prepare('SELECT recorded_at, cpu_percent, memory_used_bytes, memory_total_bytes, disk_used_bytes, disk_total_bytes, load_1, uptime_seconds FROM probe_metrics WHERE server_id = ? ORDER BY recorded_at DESC LIMIT 1')
 				.bind(server.id).first<MetricRow>(),
 			env.DB.prepare('SELECT recorded_at, reachable, latency_ms FROM probe_network WHERE server_id = ? ORDER BY recorded_at DESC LIMIT 1')
 				.bind(server.id).first<NetworkRow>(),
-			env.DB.prepare('SELECT recorded_at, cpu_percent, memory_used_bytes, memory_total_bytes, disk_used_bytes, disk_total_bytes, load_1, uptime_seconds FROM probe_metrics WHERE server_id = ? AND recorded_at >= ? ORDER BY recorded_at ASC LIMIT 1500')
-				.bind(server.id, since).all<MetricRow>(),
-			env.DB.prepare('SELECT recorded_at, reachable, latency_ms FROM probe_network WHERE server_id = ? AND recorded_at >= ? ORDER BY recorded_at ASC LIMIT 1500')
-				.bind(server.id, since).all<NetworkRow>(),
 		])
+		const [metricHistory, networkHistory] = includeHistory
+			? await Promise.all([
+				env.DB.prepare('SELECT recorded_at, cpu_percent, memory_used_bytes, memory_total_bytes, disk_used_bytes, disk_total_bytes, load_1, uptime_seconds FROM probe_metrics WHERE server_id = ? AND recorded_at >= ? ORDER BY recorded_at ASC LIMIT 1500')
+					.bind(server.id, since).all<MetricRow>(),
+				env.DB.prepare('SELECT recorded_at, reachable, latency_ms FROM probe_network WHERE server_id = ? AND recorded_at >= ? ORDER BY recorded_at ASC LIMIT 1500')
+					.bind(server.id, since).all<NetworkRow>(),
+			])
+			: [{ results: [] as MetricRow[] }, { results: [] as NetworkRow[] }]
 
 		const latestMetricAt = latestMetric ? Number(latestMetric.recorded_at) : null
 		const latestNetworkAt = latestNetwork ? Number(latestNetwork.recorded_at) : null

@@ -18,6 +18,7 @@
 - D1 数据库 `blog-server-probes` 已创建并应用 `0001_server_probes.sql`；数据库 ID 保存在 `wrangler.jsonc`。
 - 三台服务器均已安装并启用 `server-probe.timer`，每分钟采集一次；首次心跳和 SSH TCP 探测均已收到。
 - Worker 每分钟执行 SSH TCP 探测，每天 UTC 02:17 清理 30 天前的数据。
+- 面板状态每分钟刷新，24 小时趋势每 5 分钟重新读取，减少 D1 免费额度的行读取量。
 - 生产令牌保存在 Cloudflare Worker Secrets 与本机被 Git 忽略的 `.worker.secrets.json` 中；服务器端令牌位于权限为 `0600` 的 `/etc/server-probe.env`。
 
 ## 节点 ID
