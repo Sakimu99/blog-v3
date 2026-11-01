@@ -623,7 +623,7 @@ function onDetailsToggle(event: Event) {
 	}
 }
 
-.state-light, .auto-refresh > span {
+.state-light, .auto-refresh-dot {
 	flex: none;
 	width: 0.48rem;
 	aspect-ratio: 1;
