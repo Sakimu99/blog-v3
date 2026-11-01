@@ -1,0 +1,12 @@
+[Unit]
+Description=Collect server health metrics every minute
+
+[Timer]
+OnBootSec=1min
+OnUnitActiveSec=1min
+RandomizedDelaySec=10s
+Persistent=true
+Unit=server-probe.service
+
+[Install]
+WantedBy=timers.target

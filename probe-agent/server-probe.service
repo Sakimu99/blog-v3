@@ -1,0 +1,18 @@
+[Unit]
+Description=Send server health metrics to the Sakimu probe dashboard
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=root
+EnvironmentFile=/etc/server-probe.env
+ExecStart=/usr/bin/python3 /opt/server-probe/probe_agent.py
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6

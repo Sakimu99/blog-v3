@@ -1,0 +1,33 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "blog-bot-html",
+  "main": "./worker/index.ts",
+  "compatibility_date": "2026-08-01",
+  "workers_dev": false,
+  "observability": {
+    "enabled": true
+  },
+  "vars": {
+    "PAGES_ORIGIN": "https://blog-v3-ac6.pages.dev"
+  },
+  "secrets": {
+    "required": ["PROBE_TARGETS_JSON", "PROBE_TOKENS_JSON"]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "blog-server-probes",
+      "database_id": "d1024672-3543-429c-aebc-6d60b376f253",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "triggers": {
+    "crons": ["* * * * *", "17 2 * * *"]
+  },
+  "routes": [
+    {
+      "pattern": "blog.sakimu.com/*",
+      "zone_name": "sakimu.com"
+    }
+  ]
+}

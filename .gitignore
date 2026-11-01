@@ -23,6 +23,16 @@ logs
 .env.*
 !.env.example
 
+# Cloudflare Workers local secrets
+.dev.vars*
+.worker.secrets.json
+!.worker.secrets.example.json
+!.dev.vars.example
+
+# Cloudflare Workers local state and generated bindings
+.wrangler
+worker/worker-configuration.d.ts
+
 # Custom
 .vercel
 content/posts/test.md

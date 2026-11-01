@@ -29,6 +29,7 @@ catalogs:
     unplugin-yaml: ^4.1.0
     vue: ^3.5.32
     vue-router: ^5.0.4
+    wrangler: ^4.118.0
   quality:
     '@antfu/eslint-config': ^8.1.1
     '@nuxt/a11y': 1.0.0-alpha.1

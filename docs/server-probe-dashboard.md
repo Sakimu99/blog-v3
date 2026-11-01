@@ -1,0 +1,103 @@
+# 博客服务器探针面板
+
+本功能在博客的 /servers 页面公开展示三台服务器的别名、在线状态、SSH TCP 延迟、CPU、内存、磁盘和 24 小时趋势。Worker 私下持有目标地址与心跳令牌；公开 API 不返回这些配置。心跳数据保留 30 天。
+
+## 组成
+
+- app/pages/servers.vue：博客中的公开状态页面，每分钟刷新。
+- worker/index.ts：通过博客域名提供探针 API，并把其他请求代理到 Pages 静态源站。
+- worker/probes.ts：校验心跳、读取历史、通过固定私密目标探测 SSH TCP 端口。
+- migrations/0001_server_probes.sql：D1 历史表。
+- probe-agent/：仅使用 Python 标准库的 Linux 采集端和 systemd 定时器。
+- wrangler.jsonc：Worker 路由、D1 绑定和每分钟 Cron。
+
+## 节点 ID
+
+| 页面别名 | ID |
+| --- | --- |
+| 新加坡 A1 | oracle-sg-a1 |
+| 美国 A | us-a |
+| 美国 B | us-b |
+
+ID 是配置键。采集脚本的 PROBE_SERVER_ID、Worker 令牌映射和目标映射必须一致。
+
+## 接入步骤
+
+部署 Worker 会接管 blog.sakimu.com/* 路由，并将普通网页请求代理到 PAGES_ORIGIN。以下步骤会创建 Cloudflare 数据库并部署生产 Worker；目前尚未执行这些外部操作。
+
+1. 在 Cloudflare 创建 D1：
+
+    pnpm exec wrangler d1 create blog-server-probes
+
+   把命令返回的真实数据库 ID 填入 wrangler.jsonc 的 d1_databases[0].database_id，替换本地占位值。之后应用迁移：
+
+    pnpm exec wrangler d1 migrations apply blog-server-probes --remote
+
+2. 为每台服务器生成独立随机令牌，至少 32 个字符。每个值只放在 Worker 密钥文件和对应服务器的 root-only 环境文件中，不要提交到 Git。
+
+3. 在仓库根目录建立被 Git 忽略的 .worker.secrets.json，填写自己的固定探测目标和令牌映射：
+
+    {
+      "PROBE_TARGETS_JSON": "{\"oracle-sg-a1\":{\"hostname\":\"sg-host.example\",\"port\":22},\"us-a\":{\"hostname\":\"us-a.example\",\"port\":22},\"us-b\":{\"hostname\":\"us-b.example\",\"port\":22}}",
+      "PROBE_TOKENS_JSON": "{\"oracle-sg-a1\":\"新加坡节点随机令牌\",\"us-a\":\"美国A节点随机令牌\",\"us-b\":\"美国B节点随机令牌\"}"
+    }
+
+   将示例主机名替换成自己的 SSH 主机名。Worker 只读取管理员配置，不接受访客传入主机名或端口。密钥文件不要提交、粘贴到聊天或留在共享目录。
+
+4. 核对 D1 ID、Pages 源站、目标映射和令牌后，单次上传代码和密钥并部署：
+
+    pnpm exec wrangler deploy --secrets-file .worker.secrets.json
+
+   该命令会发布 Worker 版本并接管博客路由。不要用 wrangler secret put 逐个设置首批密钥；该命令会立即部署一个新版本。
+
+5. 将 probe-agent/probe_agent.py、server-probe.service、server-probe.timer 复制到每台 Linux 服务器。安装 Python 文件和 systemd 单元：
+
+    sudo install -d -m 0755 /opt/server-probe
+    sudo install -m 0755 probe_agent.py /opt/server-probe/probe_agent.py
+    sudo install -m 0644 server-probe.service /etc/systemd/system/server-probe.service
+    sudo install -m 0644 server-probe.timer /etc/systemd/system/server-probe.timer
+
+   创建 /etc/server-probe.env，只填当前机器的 ID 和独立令牌：
+
+    PROBE_SERVER_ID=oracle-sg-a1
+    PROBE_TOKEN=当前节点的随机令牌
+    PROBE_ENDPOINT=https://blog.sakimu.com/api/probes/heartbeat
+
+   美国 A 使用 us-a，美国 B 使用 us-b。环境文件必须归 root 所有且权限为 600，然后启用定时器：
+
+    sudo chown root:root /etc/server-probe.env
+    sudo chmod 600 /etc/server-probe.env
+    sudo systemctl daemon-reload
+    sudo systemctl enable --now server-probe.timer
+    sudo systemctl start server-probe.service
+
+   查看采集结果：
+
+    sudo systemctl status server-probe.timer
+    sudo journalctl -u server-probe.service -n 20 --no-pager
+
+## 本地开发
+
+1. 复制 .dev.vars.example 为 .dev.vars。示例中的目标和令牌是占位值，真实机器使用自己的私密配置。
+2. 创建本地 D1 并应用迁移：
+
+    pnpm exec wrangler d1 migrations apply blog-server-probes --local
+
+3. 在一个终端启动本地 Worker：
+
+    pnpm worker:dev
+
+   Wrangler 默认在 127.0.0.1:8787 提供 Worker 和本地 D1 API。
+
+4. 在另一个终端启动博客：
+
+    pnpm dev
+
+   Nuxt 开发代理会把 /api/probes 转发到本地 Worker。打开 http://127.0.0.1:3000/servers 查看页面；没有心跳记录时，节点会显示等待数据。
+
+## 状态定义
+
+- 在线状态由每分钟 SSH TCP 连接探测决定；三分钟内没有新探测时，才使用新鲜心跳作为在线回退。
+- 延迟是 Worker 到目标 SSH TCP 端口建立连接所需时间，不是 ICMP ping，也不表示 Web 服务健康。
+- CPU 使用 /proc/stat 的短采样窗口估算；内存取 MemTotal - MemAvailable；磁盘统计根目录。
+- 页面不展示 IP、SSH 凭据、探测目标或令牌。

@@ -76,6 +76,9 @@ export default defineNuxtConfig({
 	},
 
 	nitro: {
+		devProxy: {
+			'/api/probes': { target: 'http://127.0.0.1:8787', changeOrigin: true },
+		},
 		prerender: {
 			// 修复部分平台会在文章路径后添加 `/`，导致闪现 404 错误
 			// https://github.com/nuxt/content/issues/2378
