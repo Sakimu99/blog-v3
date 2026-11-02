@@ -5,7 +5,6 @@ export const probeServers = [
 	{ id: 'aliyun-cn', name: '国内阿里云', region: '中国大陆' },
 	{ id: 'tencent-cn-a', name: '国内腾讯云 A', region: '中国大陆' },
 	{ id: 'tencent-cn-b', name: '国内腾讯云 B', region: '中国大陆' },
-	{ id: 'aliyun-hk', name: '香港阿里云', region: '中国香港' },
 ] as const
 
 export type ProbeServerId = typeof probeServers[number]['id']

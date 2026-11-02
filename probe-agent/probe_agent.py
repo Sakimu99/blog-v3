@@ -17,7 +17,6 @@ ALLOWED_SERVER_IDS = {
     "aliyun-cn",
     "tencent-cn-a",
     "tencent-cn-b",
-    "aliyun-hk",
 }
 DEFAULT_ENDPOINT = "https://blog.sakimu.com/api/probes/heartbeat"
 
