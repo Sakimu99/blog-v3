@@ -1,10 +1,10 @@
-import { applySecurityHeaders, isAllowedMethod } from './security'
+import type { ProbeEnv } from './probes'
 import {
 	handleProbeApi,
 	purgeExpiredProbeData,
 	runNetworkProbes,
-	type ProbeEnv,
 } from './probes'
+import { applySecurityHeaders, isAllowedMethod } from './security'
 
 interface Env extends ProbeEnv {
 	PAGES_ORIGIN?: string
