@@ -64,10 +64,14 @@ export default {
 			return createErrorResponse(405, 'Method Not Allowed')
 
 		try {
-			const response = await fetch(createOriginRequest(
+			const originRequest = createOriginRequest(
 				request,
 				env.PAGES_ORIGIN || defaultPagesOrigin,
-			))
+			)
+			const fetchOptions = url.pathname === '/servers' || url.pathname === '/servers/'
+				? { cache: 'no-store' as const }
+				: undefined
+			const response = await fetch(originRequest, fetchOptions)
 			return createSecureResponse(response)
 		}
 		catch {
