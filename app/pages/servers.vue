@@ -534,6 +534,13 @@ function onDetailsToggle(event: Event) {
 	letter-spacing: 0.16em;
 }
 
+.status-eyebrow {
+	@media (max-width: $breakpoint-mobile) {
+		letter-spacing: 0.1em;
+		white-space: nowrap;
+	}
+}
+
 .status-eyebrow > span {
 	padding: 0 0.3em;
 	color: #60aaa8;
@@ -571,6 +578,14 @@ function onDetailsToggle(event: Event) {
 	&.is-waiting > strong {
 		color: #777;
 	}
+
+	@media (max-width: $breakpoint-mobile) {
+		width: 5.4rem;
+
+		> strong {
+			font-size: 1.4rem;
+		}
+	}
 }
 
 .status-orbit__ring {
@@ -598,6 +613,11 @@ function onDetailsToggle(event: Event) {
 	top: calc(50% + 1.1rem);
 	color: var(--c-text-2);
 	font-size: 0.7rem;
+
+	@media (max-width: $breakpoint-mobile) {
+		top: calc(50% + 0.95rem);
+		font-size: 0.62rem;
+	}
 }
 
 .status-hero__footer {
@@ -663,9 +683,11 @@ function onDetailsToggle(event: Event) {
 	cursor: pointer;
 	transition: background 0.2s, transform 0.2s;
 
-	&:hover:not(:disabled) {
-		transform: translateY(-1px);
-		background: #FFF;
+	@media (hover: hover) {
+		&:hover:not(:disabled) {
+			transform: translateY(-1px);
+			background: #FFF;
+		}
 	}
 
 	&:disabled {
@@ -791,6 +813,12 @@ function onDetailsToggle(event: Event) {
 		font-size: 1.35rem;
 		letter-spacing: -0.03em;
 	}
+
+	@media (max-width: $breakpoint-mobile) {
+		flex-direction: column;
+		align-items: stretch;
+		gap: 0.35rem;
+	}
 }
 
 .section-kicker {
@@ -817,6 +845,12 @@ function onDetailsToggle(event: Event) {
 		aspect-ratio: 1;
 		border-radius: 50%;
 		background: #5CAF86;
+	}
+
+	@media (max-width: $breakpoint-mobile) {
+		justify-content: flex-start;
+		gap: 0.3rem;
+		text-align: left;
 	}
 }
 
@@ -953,12 +987,21 @@ function onDetailsToggle(event: Event) {
 	> strong {
 		font-weight: 700;
 	}
+
+	@media (max-width: $breakpoint-mobile) {
+		gap: 0.25rem;
+	}
 }
 
 .resource-name {
 	display: inline-flex;
 	align-items: center;
 	gap: 0.4rem;
+	white-space: nowrap;
+
+	@media (max-width: $breakpoint-mobile) {
+		gap: 0.25rem;
+	}
 }
 
 .resource-dot, .trend-legend i {
@@ -1004,12 +1047,22 @@ function onDetailsToggle(event: Event) {
 	line-height: 0.72rem;
 	text-overflow: ellipsis;
 	white-space: nowrap;
+
+	@media (max-width: $breakpoint-mobile) {
+		min-height: 0.85rem;
+		font-size: 0.62rem;
+		line-height: 0.85rem;
+	}
 }
 
 .metric-pending {
 	margin: -0.25rem 0 0;
 	color: var(--c-text-3);
 	font-size: 0.62rem;
+
+	@media (max-width: $breakpoint-mobile) {
+		font-size: 0.68rem;
+	}
 }
 
 .node-details {
@@ -1031,6 +1084,13 @@ function onDetailsToggle(event: Event) {
 
 		&::-webkit-details-marker {
 			display: none;
+		}
+
+		// 加大触控区域
+		@media (max-width: $breakpoint-mobile) {
+			min-height: 2.5rem;
+			padding-top: 0.25rem;
+			font-size: 0.75rem;
 		}
 	}
 
@@ -1090,6 +1150,10 @@ function onDetailsToggle(event: Event) {
 
 	i {
 		width: 0.35rem;
+	}
+
+	@media (max-width: $breakpoint-mobile) {
+		font-size: 0.66rem;
 	}
 }
 
@@ -1153,6 +1217,10 @@ function onDetailsToggle(event: Event) {
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
+	}
+
+	@media (max-width: $breakpoint-mobile) {
+		font-size: 0.62rem;
 	}
 }
 
