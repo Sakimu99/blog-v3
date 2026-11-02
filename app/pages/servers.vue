@@ -366,6 +366,7 @@ function onDetailsToggle(event: Event) {
 								<strong>{{ formatPercent(server.metrics?.cpuPercent) }}</strong>
 							</div>
 							<div class="resource-track"><span class="cpu" :style="{ width: progressWidth(server.metrics?.cpuPercent) }" /></div>
+							<span class="resource-detail">1 分钟负载 {{ server.metrics ? server.metrics.load1.toFixed(2) : '—' }}</span>
 						</div>
 						<div class="resource-cell">
 							<div class="resource-topline">
@@ -991,9 +992,15 @@ function onDetailsToggle(event: Event) {
 }
 
 .resource-detail {
+	display: block;
+	min-height: 0.72rem;
+	overflow: hidden;
 	color: var(--c-text-3);
 	font-size: 0.56rem;
 	font-variant-numeric: tabular-nums;
+	line-height: 0.72rem;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
 .metric-pending {
