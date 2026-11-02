@@ -16,8 +16,7 @@
 - 页面已发布到 Cloudflare Pages 项目 `blog-v3`：<https://blog.sakimu.com/servers>。
 - `blog-bot-html` Worker 已绑定 `blog.sakimu.com/*`，为页面提供探针 API，并代理普通站点请求到 Pages 源站。
 - D1 数据库 `blog-server-probes` 已创建并应用 `0001_server_probes.sql`；数据库 ID 保存在 `wrangler.jsonc`。
-- Oracle 新加坡、美国 A、B 与国内腾讯云 A 已安装并启用 `server-probe.timer`，每分钟采集一次。
-- 国内阿里云与国内腾讯云 B 已加入公开别名清单及 Worker 的私有 SSH TCP 探测配置；待核验 SSH 主机指纹后安装采集器。
+- 六台纳入范围的云服务器均已安装并启用 `server-probe.timer`，每分钟采集一次。
 - Worker 每分钟执行 SSH TCP 探测，每天 UTC 02:17 清理 30 天前的数据。
 - 面板状态每分钟刷新；展开趋势时才读取 24 小时历史，之后每 30 分钟更新一次，降低公开访问的 D1 行读取量。
 - 生产令牌保存在 Cloudflare Worker Secrets 与本机被 Git 忽略的 `.worker.secrets.json` 中；服务器端令牌位于权限为 `0600` 的 `/etc/server-probe.env`。
@@ -29,9 +28,9 @@
 | 新加坡 A1 | oracle-sg-a1 | 已部署 |
 | 美国 A | us-a | 已部署 |
 | 美国 B | us-b | 已部署 |
-| 国内阿里云 | aliyun-cn | 待核验 SSH 主机指纹 |
+| 国内阿里云 | aliyun-cn | 已部署 |
 | 国内腾讯云 A | tencent-cn-a | 已部署 |
-| 国内腾讯云 B | tencent-cn-b | 待核验 SSH 主机指纹 |
+| 国内腾讯云 B | tencent-cn-b | 已部署 |
 
 ID 是配置键。采集脚本的 PROBE_SERVER_ID、Worker 令牌映射和目标映射必须一致。
 
