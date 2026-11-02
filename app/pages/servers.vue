@@ -28,7 +28,10 @@ const historyRefreshMinutes = 30
 
 const servers = computed<ProbeServerSnapshot[]>(() => probeServers.map((server) => {
 	const snapshot = dashboard.value?.servers.find(item => item.id === server.id)
-	return snapshot ?? {
+	if (snapshot)
+		return { ...snapshot, name: server.name, region: server.region }
+
+	return {
 		...server,
 		online: null,
 		latencyMs: null,
