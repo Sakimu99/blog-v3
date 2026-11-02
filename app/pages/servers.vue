@@ -13,7 +13,7 @@ layoutStore.setAside([])
 
 useSeoMeta({
 	title: '服务器状态',
-	description: appConfig.title + '的云服务器状态、资源使用和近 24 小时趋势。',
+	description: `${appConfig.title}的云服务器状态、资源使用和近 24 小时趋势。`,
 })
 
 const dashboard = shallowRef<ProbeDashboardResponse | null>(null)
@@ -140,7 +140,7 @@ function formatTime(value: number | null | undefined): string {
 }
 
 function formatPercent(value: number | null | undefined): string {
-	return typeof value === 'number' ? value.toFixed(1) + '%' : '—'
+	return typeof value === 'number' ? `${value.toFixed(1)}%` : '—'
 }
 
 function formatBytes(value: number | null | undefined): string {
@@ -148,7 +148,7 @@ function formatBytes(value: number | null | undefined): string {
 		return '—'
 
 	if (value < 1024)
-		return value + ' B'
+		return `${value} B`
 
 	const units = ['KiB', 'MiB', 'GiB', 'TiB']
 	let scaled = value
@@ -157,7 +157,7 @@ function formatBytes(value: number | null | undefined): string {
 		scaled /= 1024
 		unitIndex++
 	}
-	return scaled.toFixed(scaled >= 10 ? 0 : 1) + ' ' + units[unitIndex]
+	return `${scaled.toFixed(scaled >= 10 ? 0 : 1)} ${units[unitIndex]}`
 }
 
 function formatDuration(seconds: number | null | undefined): string {
@@ -168,16 +168,16 @@ function formatDuration(seconds: number | null | undefined): string {
 	const hours = Math.floor((seconds % 86_400) / 3_600)
 	const minutes = Math.floor((seconds % 3_600) / 60)
 	if (days > 0)
-		return days + ' 天 ' + hours + ' 小时'
+		return `${days} 天 ${hours} 小时`
 	if (hours > 0)
-		return hours + ' 小时 ' + minutes + ' 分'
-	return minutes + ' 分钟'
+		return `${hours} 小时 ${minutes} 分`
+	return `${minutes} 分钟`
 }
 
 function progressWidth(value: number | null | undefined): string {
 	if (typeof value !== 'number' || !Number.isFinite(value))
 		return '0%'
-	return Math.min(100, Math.max(0, value)) + '%'
+	return `${Math.min(100, Math.max(0, value))}%`
 }
 
 type MetricKey = 'cpuPercent' | 'memoryPercent' | 'diskPercent'
@@ -208,7 +208,7 @@ function linePath(values: Array<number | null>, maxValue: number, height = 100):
 		}
 		const x = (index / (values.length - 1)) * width
 		const y = height - Math.min(100, Math.max(0, value / maxValue * 100))
-		path += (connected ? 'L' : 'M') + x.toFixed(1) + ' ' + y.toFixed(1) + ' '
+		path += `${connected ? 'L' : 'M'}${x.toFixed(1)} ${y.toFixed(1)} `
 		connected = true
 	})
 
@@ -218,7 +218,7 @@ function linePath(values: Array<number | null>, maxValue: number, height = 100):
 function trendTimeRange(metrics: ProbeMetricTrend[]): string {
 	if (metrics.length === 0)
 		return '等待采集数据'
-	return formatTime(metrics[0]?.at) + ' — ' + formatTime(metrics.at(-1)?.at)
+	return `${formatTime(metrics[0]?.at)} — ${formatTime(metrics.at(-1)?.at)}`
 }
 
 function trendEmptyLabel(count: number): string {
@@ -253,23 +253,23 @@ function onDetailsToggle(event: Event) {
 
 	<section class="servers-page proper-height">
 		<header class="status-hero reading-card">
-			<div class="status-hero__copy">
+			<div class="status-hero-copy">
 				<span class="status-eyebrow">NODE OBSERVATORY <span>·</span> 24H</span>
 				<h1 class="text-creative">服务器状态</h1>
 				<p>把远方的机器，收进一张安静的运行图里。</p>
 			</div>
 
 			<div class="status-orbit" :class="{ 'is-down': offlineCount > 0, 'is-waiting': unknownCount === servers.length }">
-				<span class="status-orbit__ring" aria-hidden="true" />
+				<span class="status-orbit-ring" aria-hidden="true" />
 				<strong>{{ onlineCount.toString().padStart(2, '0') }}<small> / {{ servers.length.toString().padStart(2, '0') }}</small></strong>
-				<span class="status-orbit__label">节点在线</span>
+				<span class="status-orbit-label">节点在线</span>
 			</div>
 
-			<div class="status-hero__footer">
+			<div class="status-hero-footer">
 				<div class="overall-state">
 					<span class="state-light" :class="{ 'is-down': offlineCount > 0, 'is-waiting': unknownCount === servers.length || requestState === 'error' }" />
 					<strong>{{ overallLabel }}</strong>
-					<span>{{ dashboard ? '更新于 ' + formatTime(dashboard.generatedAt) : '等待首次同步' }}</span>
+					<span>{{ dashboard ? `更新于 ${formatTime(dashboard.generatedAt)}` : '等待首次同步' }}</span>
 				</div>
 				<button
 					class="refresh-button"
@@ -335,7 +335,7 @@ function onDetailsToggle(event: Event) {
 
 			<div class="node-grid">
 				<article v-for="server in servers" :key="server.id" class="node-card reading-card">
-					<header class="node-card__header">
+					<header class="node-card-header">
 						<div class="node-identity">
 							<div class="node-mark" aria-hidden="true">
 								<Icon name="tabler:server-2" />
@@ -354,7 +354,7 @@ function onDetailsToggle(event: Event) {
 					<div class="node-connection">
 						<div>
 							<span class="metric-label">SSH TCP 延迟</span>
-							<strong>{{ server.latencyMs === null ? '—' : server.latencyMs.toFixed(1) + ' ms' }}</strong>
+							<strong>{{ server.latencyMs === null ? '—' : `${server.latencyMs.toFixed(1)} ms` }}</strong>
 						</div>
 						<div class="connection-note">
 							<span class="metric-label">最近探测</span>
@@ -410,7 +410,7 @@ function onDetailsToggle(event: Event) {
 								</div>
 							</div>
 							<div class="trend-chart">
-								<svg viewBox="0 0 600 100" preserveAspectRatio="none" role="img" :aria-label="server.name + ' CPU、内存和磁盘历史趋势'">
+								<svg viewBox="0 0 600 100" preserveAspectRatio="none" role="img" :aria-label="`${server.name} CPU、内存和磁盘历史趋势`">
 									<line x1="0" y1="25" x2="600" y2="25" />
 									<line x1="0" y1="50" x2="600" y2="50" />
 									<line x1="0" y1="75" x2="600" y2="75" />
@@ -445,12 +445,12 @@ function onDetailsToggle(event: Event) {
 						</div>
 
 						<div class="network-history">
-							<div class="network-history__heading">
+							<div class="network-history-heading">
 								<span>SSH 连通历史</span>
 								<strong>{{ server.history.network.length }} <small>次</small></strong>
 							</div>
 							<div class="network-chart">
-								<svg viewBox="0 0 600 54" preserveAspectRatio="none" role="img" :aria-label="server.name + ' SSH 延迟历史趋势'">
+								<svg viewBox="0 0 600 54" preserveAspectRatio="none" role="img" :aria-label="`${server.name} SSH 延迟历史趋势`">
 									<line x1="0" y1="50" x2="600" y2="50" />
 									<path class="latency-line" :d="latencyPath(server.history.network)" />
 								</svg>
@@ -496,11 +496,11 @@ function onDetailsToggle(event: Event) {
 		var(--c-reading-card);
 
 	&::after {
-		content: '';
+		content: "";
 		position: absolute;
 		inset: auto 0 0;
 		height: 3px;
-		background: linear-gradient(90deg, #4c75d8, #71cfc7 48%, #d0b7fb);
+		background: linear-gradient(90deg, #4C75D8, #71CFC7 48%, #D0B7FB);
 		opacity: 0.75;
 	}
 
@@ -510,7 +510,7 @@ function onDetailsToggle(event: Event) {
 	}
 }
 
-.status-hero__copy {
+.status-hero-copy {
 	position: relative;
 	z-index: 1;
 
@@ -543,7 +543,7 @@ function onDetailsToggle(event: Event) {
 
 .status-eyebrow > span {
 	padding: 0 0.3em;
-	color: #60aaa8;
+	color: #60AAA8;
 }
 
 .status-orbit {
@@ -560,7 +560,7 @@ function onDetailsToggle(event: Event) {
 	> strong {
 		z-index: 1;
 		margin-top: 0.25rem;
-		color: #314f8d;
+		color: #314F8D;
 		font-size: 1.6rem;
 		font-variant-numeric: tabular-nums;
 	}
@@ -572,7 +572,7 @@ function onDetailsToggle(event: Event) {
 	}
 
 	&.is-down > strong {
-		color: #b34848;
+		color: #B34848;
 	}
 
 	&.is-waiting > strong {
@@ -588,7 +588,7 @@ function onDetailsToggle(event: Event) {
 	}
 }
 
-.status-orbit__ring {
+.status-orbit-ring {
 	position: absolute;
 	inset: 0.55rem;
 	border: 1px dashed hsl(218deg 55% 65% / 36%);
@@ -596,19 +596,19 @@ function onDetailsToggle(event: Event) {
 	animation: orbit-turn 36s linear infinite;
 
 	&::before {
-		content: '';
+		content: "";
 		position: absolute;
 		top: 0.35rem;
 		left: 50%;
 		width: 0.45rem;
 		aspect-ratio: 1;
 		border-radius: 50%;
-		background: #58bcb4;
+		background: #58BCB4;
 		box-shadow: 0 0 0 0.25rem hsl(173deg 47% 56% / 15%);
 	}
 }
 
-.status-orbit__label {
+.status-orbit-label {
 	position: absolute;
 	top: calc(50% + 1.1rem);
 	color: var(--c-text-2);
@@ -620,7 +620,7 @@ function onDetailsToggle(event: Event) {
 	}
 }
 
-.status-hero__footer {
+.status-hero-footer {
 	display: flex;
 	grid-column: 1 / -1;
 	align-items: center;
@@ -654,16 +654,16 @@ function onDetailsToggle(event: Event) {
 	width: 0.48rem;
 	aspect-ratio: 1;
 	border-radius: 50%;
-	background: #45ae82;
+	background: #45AE82;
 	box-shadow: 0 0 0 0.2rem hsl(147deg 48% 48% / 14%);
 
 	&.is-down {
-		background: #d26262;
+		background: #D26262;
 		box-shadow: 0 0 0 0.2rem hsl(0deg 58% 55% / 13%);
 	}
 
 	&.is-waiting {
-		background: #c39743;
+		background: #C39743;
 		box-shadow: 0 0 0 0.2rem hsl(38deg 58% 55% / 13%);
 	}
 }
@@ -678,7 +678,7 @@ function onDetailsToggle(event: Event) {
 	border: 1px solid hsl(218deg 55% 65% / 35%);
 	border-radius: 999px;
 	background: hsl(0deg 0% 100% / 62%);
-	color: #365b9e;
+	color: #365B9E;
 	font-size: 0.76rem;
 	cursor: pointer;
 	transition: background 0.2s, transform 0.2s;
@@ -705,7 +705,7 @@ function onDetailsToggle(event: Event) {
 
 	> :first-child {
 		flex: none;
-		color: #b5863f;
+		color: #B5863F;
 		font-size: 1.2rem;
 	}
 
@@ -789,11 +789,11 @@ function onDetailsToggle(event: Event) {
 }
 
 .summary-online {
-	color: #24875d;
+	color: #24875D;
 }
 
 .summary-down {
-	color: #bd4f4f;
+	color: #BD4F4F;
 }
 
 .node-section {
@@ -872,7 +872,7 @@ function onDetailsToggle(event: Event) {
 	padding: 0.75rem;
 }
 
-.node-card__header, .node-identity, .node-status, .node-connection, .resource-topline, .trend-heading, .trend-legend, .node-footer, .network-history__heading {
+.node-card-header, .node-identity, .node-status, .node-connection, .resource-topline, .trend-heading, .trend-legend, .node-footer, .network-history-heading {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
@@ -903,7 +903,7 @@ function onDetailsToggle(event: Event) {
 	border: 1px solid hsl(218deg 45% 75% / 38%);
 	border-radius: 0.72rem;
 	background: linear-gradient(145deg, hsl(207deg 87% 92%), hsl(248deg 76% 95%));
-	color: #4d6eaa;
+	color: #4D6EAA;
 	font-size: 1.1rem;
 }
 
@@ -924,22 +924,22 @@ function onDetailsToggle(event: Event) {
 		width: 0.4rem;
 		aspect-ratio: 1;
 		border-radius: 50%;
-		background: currentColor;
+		background: currentcolor;
 	}
 
 	&.is-online {
 		background: hsl(150deg 45% 48% / 12%);
-		color: #27885e;
+		color: #27885E;
 	}
 
 	&.is-offline {
 		background: hsl(0deg 58% 55% / 11%);
-		color: #b44c4c;
+		color: #B44C4C;
 	}
 
 	&.is-unknown {
 		background: hsl(40deg 65% 50% / 13%);
-		color: #96743a;
+		color: #96743A;
 	}
 }
 
@@ -957,7 +957,7 @@ function onDetailsToggle(event: Event) {
 }
 
 .node-connection strong {
-	color: #355a99;
+	color: #355A99;
 	font-size: 1.08rem;
 	font-variant-numeric: tabular-nums;
 }
@@ -1008,19 +1008,19 @@ function onDetailsToggle(event: Event) {
 	width: 0.45rem;
 	aspect-ratio: 1;
 	border-radius: 50%;
-	background: #5d82d3;
+	background: #5D82D3;
 }
 
 .cpu {
-	background: #587ed1;
+	background: #587ED1;
 }
 
 .memory {
-	background: #54aaa2;
+	background: #54AAA2;
 }
 
 .disk {
-	background: #ac80d6;
+	background: #AC80D6;
 }
 
 .resource-track {
@@ -1184,15 +1184,15 @@ function onDetailsToggle(event: Event) {
 	}
 
 	.cpu-line {
-		stroke: #587ed1;
+		stroke: #587ED1;
 	}
 
 	.memory-line {
-		stroke: #54aaa2;
+		stroke: #54AAA2;
 	}
 
 	.disk-line {
-		stroke: #ac80d6;
+		stroke: #AC80D6;
 	}
 }
 
@@ -1247,7 +1247,7 @@ function onDetailsToggle(event: Event) {
 	border-top: 1px solid hsl(220deg 22% 77% / 30%);
 }
 
-.network-history__heading {
+.network-history-heading {
 	font-size: 0.68rem;
 	color: var(--c-text-2);
 
@@ -1281,7 +1281,7 @@ function onDetailsToggle(event: Event) {
 
 	path {
 		fill: none;
-		stroke: #4da99c;
+		stroke: #4DA99C;
 		stroke-width: 2;
 		stroke-linecap: round;
 		stroke-linejoin: round;
@@ -1314,7 +1314,7 @@ function onDetailsToggle(event: Event) {
 	width: 1rem;
 	aspect-ratio: 1;
 	flex: none;
-	border: 1px solid currentColor;
+	border: 1px solid currentcolor;
 	border-radius: 50%;
 	font-size: 0.62rem;
 	font-weight: 700;
@@ -1327,7 +1327,7 @@ function onDetailsToggle(event: Event) {
 }
 
 @media (prefers-reduced-motion: reduce) {
-	.status-orbit__ring, .spin {
+	.status-orbit-ring, .spin {
 		animation: none;
 	}
 

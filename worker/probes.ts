@@ -1,4 +1,3 @@
-import { connect } from 'cloudflare:sockets'
 import type {
 	ProbeDashboardResponse,
 	ProbeMetricTrend,
@@ -6,8 +5,12 @@ import type {
 	ProbeServerId,
 	ProbeServerSnapshot,
 } from '../shared/server-probes'
+import { connect } from 'cloudflare:sockets'
 import { probeServers } from '../shared/server-probes'
 import { applySecurityHeaders } from './security'
+
+const HEARTBEAT_PATH_PATTERN = /^\/api\/probes\/heartbeat\/([a-z0-9-]+)$/
+const INVALID_HOSTNAME_PATTERN = /[\s/?#@]/
 
 export interface ProbeEnv {
 	DB: D1Database
@@ -165,8 +168,9 @@ function validateAgentMetrics(value: unknown): AgentMetrics | null {
 		|| !isIntegerInRange(diskTotalBytes, 1, Number.MAX_SAFE_INTEGER)
 		|| diskUsedBytes > diskTotalBytes
 		|| !isNumberInRange(load1, 0, 1_000_000)
-		|| !isIntegerInRange(uptimeSeconds, 0, Number.MAX_SAFE_INTEGER))
+		|| !isIntegerInRange(uptimeSeconds, 0, Number.MAX_SAFE_INTEGER)) {
 		return null
+	}
 
 	return {
 		cpuPercent,
@@ -199,7 +203,7 @@ export async function handleProbeApi(request: Request, env: ProbeEnv): Promise<R
 		}
 	}
 
-	const heartbeatMatch = pathname.match(/^\/api\/probes\/heartbeat\/([a-z0-9-]+)$/)
+	const heartbeatMatch = pathname.match(HEARTBEAT_PATH_PATTERN)
 	if (!heartbeatMatch)
 		return secureJson({ error: 'not_found' }, 404)
 	if (request.method !== 'POST')
@@ -288,17 +292,21 @@ async function readDashboard(env: ProbeEnv, includeHistory: boolean): Promise<Pr
 	const servers = await Promise.all(probeServers.map(async (server): Promise<ProbeServerSnapshot> => {
 		const [latestMetric, latestNetwork] = await Promise.all([
 			env.DB.prepare('SELECT recorded_at, cpu_percent, memory_used_bytes, memory_total_bytes, disk_used_bytes, disk_total_bytes, load_1, uptime_seconds FROM probe_metrics WHERE server_id = ? ORDER BY recorded_at DESC LIMIT 1')
-				.bind(server.id).first<MetricRow>(),
+				.bind(server.id)
+				.first<MetricRow>(),
 			env.DB.prepare('SELECT recorded_at, reachable, latency_ms FROM probe_network WHERE server_id = ? ORDER BY recorded_at DESC LIMIT 1')
-				.bind(server.id).first<NetworkRow>(),
+				.bind(server.id)
+				.first<NetworkRow>(),
 		])
 		const [metricHistory, networkHistory] = includeHistory
 			? await Promise.all([
-				env.DB.prepare('SELECT recorded_at, cpu_percent, memory_used_bytes, memory_total_bytes, disk_used_bytes, disk_total_bytes, load_1, uptime_seconds FROM probe_metrics WHERE server_id = ? AND recorded_at >= ? ORDER BY recorded_at ASC LIMIT 1500')
-					.bind(server.id, since).all<MetricRow>(),
-				env.DB.prepare('SELECT recorded_at, reachable, latency_ms FROM probe_network WHERE server_id = ? AND recorded_at >= ? ORDER BY recorded_at ASC LIMIT 1500')
-					.bind(server.id, since).all<NetworkRow>(),
-			])
+					env.DB.prepare('SELECT recorded_at, cpu_percent, memory_used_bytes, memory_total_bytes, disk_used_bytes, disk_total_bytes, load_1, uptime_seconds FROM probe_metrics WHERE server_id = ? AND recorded_at >= ? ORDER BY recorded_at ASC LIMIT 1500')
+						.bind(server.id, since)
+						.all<MetricRow>(),
+					env.DB.prepare('SELECT recorded_at, reachable, latency_ms FROM probe_network WHERE server_id = ? AND recorded_at >= ? ORDER BY recorded_at ASC LIMIT 1500')
+						.bind(server.id, since)
+						.all<NetworkRow>(),
+				])
 			: [{ results: [] as MetricRow[] }, { results: [] as NetworkRow[] }]
 
 		const latestMetricAt = latestMetric ? Number(latestMetric.recorded_at) : null
@@ -365,9 +373,10 @@ function parseTargets(value: string | undefined): Partial<Record<ProbeServerId, 
 		if (typeof hostname !== 'string'
 			|| !hostname.trim()
 			|| hostname.length > 253
-			|| /[\s/?#@]/.test(hostname)
-			|| !isIntegerInRange(port, 1, 65535))
+			|| INVALID_HOSTNAME_PATTERN.test(hostname)
+			|| !isIntegerInRange(port, 1, 65535)) {
 			continue
+		}
 
 		targets[server.id] = { hostname, port }
 	}
