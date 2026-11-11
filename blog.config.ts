@@ -102,7 +102,7 @@ export const myFeed: FeedEntry = {
 	author: blogConfig.author.name,
 	sitenick: '咲梦',
 	title: blogConfig.title,
-	desc: blogConfig.subtitle || blogConfig.description,
+	desc: '所念所想 皆是虚妄',
 	link: blogConfig.url,
 	feed: new URL('/atom.xml', blogConfig.url).toString(),
 	icon: blogConfig.favicon,

@@ -31,7 +31,16 @@ export default [
 				date: '2026-05-01',
 				comment: '二叉树树本尊。',
 			},
-
+			{
+				author: 'xiaoli',
+				title: 'xiaoli的Blog',
+				desc: 'Keep thinking',
+				link: 'https://www.xiaolidev.com/',
+				feed: 'https://www.xiaolidev.com/rss.xml',
+				icon: 'https://img.xiaolidev.com/b_ebef16bd5df9016c8b030733c307d528.webp',
+				avatar: 'https://img.xiaolidev.com/b_ebef16bd5df9016c8b030733c307d528.webp',
+				date: '2026-11-11',
+			},
 		],
 	},
 ] satisfies FeedGroup[]
